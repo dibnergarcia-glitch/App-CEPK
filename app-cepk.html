@@ -1,0 +1,6950 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Registre suas notas e descubra quanto precisa tirar para passar de ano — matéria por matéria.">
+  <meta name="theme-color" content="#0f172a">
+  <title>App CEPK — Calculadora de notas</title>
+  <style>
+/* ================================================================== */
+/* App CEPK — estilos                                                  */
+/* ================================================================== */
+
+:root {
+  --bg: #0b1220;
+  --bg-2: #0f172a;
+  --surface: #162033;
+  --surface-2: #1b2840;
+  --surface-3: #22314d;
+  --border: #2b3b57;
+  --border-soft: rgba(148, 163, 184, 0.16);
+  --text: #f1f5f9;
+  --muted: #9aa9c0;
+  --muted-2: #71829c;
+  --accent: #38bdf8;
+  --accent-2: #818cf8;
+  --accent-ink: #04121f;
+  --safe: #34d399;
+  --attention: #fbbf24;
+  --risk: #fb923c;
+  --critical: #f87171;
+  --empty: #94a3b8;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.9);
+  --max: 980px;
+  --tabbar-h: 70px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(900px 500px at 50% -12%, rgba(56, 189, 248, 0.13), transparent 60%),
+    radial-gradient(700px 420px at 105% 2%, rgba(129, 140, 248, 0.1), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--accent);
+}
+
+img,
+svg {
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+code {
+  padding: 0.1rem 0.35rem;
+  border-radius: 5px;
+  background: rgba(148, 163, 184, 0.12);
+  font-size: 0.85em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Marca e navegação                                                   */
+/* ------------------------------------------------------------------ */
+
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.noscript {
+  max-width: 540px;
+  margin: 3rem auto;
+  padding: 1.2rem;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(251, 191, 36, 0.08);
+  color: #fde68a;
+  text-align: center;
+}
+
+.noscript strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #fef3c7;
+}
+
+.noscript p {
+  color: #d6c690;
+  font-size: 0.85rem;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem max(1rem, calc((100vw - 1180px) / 2));
+  background: rgba(11, 18, 32, 0.82);
+  border-bottom: 1px solid var(--border-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  font-size: 1.05rem;
+  font-weight: 900;
+  box-shadow: 0 8px 20px -8px rgba(56, 189, 248, 0.9);
+}
+
+.brand__text strong {
+  color: var(--accent);
+}
+
+.brand--lg .brand__mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 1.25rem;
+}
+
+.brand--lg {
+  font-size: 1.05rem;
+}
+
+.topnav {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-inline: auto;
+}
+
+.topnav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.topnav__link .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.topnav__link:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.topnav__link.is-active {
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.topbar__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.student-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.8rem;
+  max-width: 220px;
+}
+
+.student-chip .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.student-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-chip small {
+  padding-left: 0.45rem;
+  border-left: 1px solid var(--border);
+  color: var(--muted-2);
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.topbar .icon-btn {
+  background: transparent;
+}
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.15rem;
+  padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom));
+  background: rgba(11, 18, 32, 0.94);
+  border-top: 1px solid var(--border-soft);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.tablink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.45rem 0.2rem;
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.66rem;
+  font-weight: 650;
+}
+
+.tablink .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.tablink.is-active {
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.09);
+}
+
+/* ------------------------------------------------------------------ */
+/* Layout                                                              */
+/* ------------------------------------------------------------------ */
+
+.view {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 1.5rem 1rem calc(var(--tabbar-h) + 2rem + env(safe-area-inset-bottom));
+  outline: none;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.page-head h1 {
+  margin: 0.2rem 0 0.4rem;
+  font-size: clamp(1.7rem, 5.5vw, 2.45rem);
+  font-weight: 750;
+}
+
+.page-sub {
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.8rem 0 0.8rem;
+}
+
+.section-head h2 {
+  font-size: 1.15rem;
+}
+
+.hint {
+  color: var(--muted-2);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.hint .icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: 0.2rem;
+}
+
+.form-error {
+  margin-top: 1rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: 10px;
+  background: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+  font-size: 0.83rem;
+}
+
+.banner {
+  display: flex;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(251, 191, 36, 0.08);
+  color: #fde68a;
+  font-size: 0.82rem;
+}
+
+.banner .icon {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+.banner strong {
+  display: block;
+  color: #fef3c7;
+}
+
+.banner p {
+  margin-top: 0.1rem;
+  color: #d6c690;
+}
+
+/* ------------------------------------------------------------------ */
+/* Botões, campos e pílulas                                            */
+/* ------------------------------------------------------------------ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease,
+    filter 0.15s ease;
+}
+
+.btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  color: var(--accent-ink);
+  box-shadow: 0 12px 26px -14px rgba(56, 189, 248, 0.95);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+.btn--ghost {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.btn--ghost:hover {
+  background: var(--surface-2);
+  border-color: #3d5375;
+}
+
+.btn--danger {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
+.btn--danger:hover {
+  background: rgba(248, 113, 113, 0.2);
+}
+
+.btn--small {
+  padding: 0.45rem 0.7rem;
+  border-radius: 9px;
+  font-size: 0.8rem;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+.link-btn .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.icon-btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-btn:hover {
+  border-color: #3d5375;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.icon-btn--danger:hover {
+  border-color: rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--critical);
+}
+
+.icon-btn:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+.field {
+  display: grid;
+  gap: 0.38rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.field > span,
+.field__label {
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 0.68rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--bg-2);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+}
+
+.field small {
+  color: var(--muted-2);
+  font-size: 0.74rem;
+}
+
+.field--inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.field__control {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.field__control input {
+  width: 5rem;
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+  font-weight: 750;
+}
+
+.field__suffix {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field-group {
+  margin: 1.2rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.field-group legend {
+  margin-bottom: 0.5rem;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.search .icon {
+  position: absolute;
+  left: 0.8rem;
+  width: 18px;
+  height: 18px;
+  color: var(--muted-2);
+  pointer-events: none;
+}
+
+.search input {
+  width: 100%;
+  padding: 0.7rem 0.9rem 0.7rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.search input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.69rem;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.pill--safe {
+  border-color: rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--safe);
+}
+
+.pill--attention {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--attention);
+}
+
+.pill--risk {
+  border-color: rgba(251, 146, 60, 0.32);
+  background: rgba(251, 146, 60, 0.12);
+  color: var(--risk);
+}
+
+.pill--critical {
+  border-color: rgba(248, 113, 113, 0.32);
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--critical);
+}
+
+.pill--empty {
+  border-color: var(--border);
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--muted);
+}
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem 0.4rem;
+  border-radius: 5px;
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.flag--warn {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--attention);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.chip small {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+.chip--muted {
+  background: rgba(148, 163, 184, 0.07);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 550;
+}
+
+.chip--attention {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.chip--risk {
+  border-color: rgba(251, 146, 60, 0.32);
+  background: rgba(251, 146, 60, 0.08);
+}
+
+.chip--critical {
+  border-color: rgba(248, 113, 113, 0.32);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.meter {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: #0a1424;
+}
+
+.meter > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--safe));
+  transition: width 0.3s ease;
+}
+
+.meter > i,
+.meter__target {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 16px;
+  border-radius: 2px;
+  background: #e2e8f0;
+  opacity: 0.75;
+}
+
+.meter--hero {
+  height: 10px;
+}
+
+.meter--hero > span {
+  background: linear-gradient(90deg, var(--accent), #818cf8 55%, var(--safe));
+}
+
+.meter-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  color: var(--muted-2);
+  font-size: 0.64rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Aviso de falha ao carregar (file://)                                */
+/* ------------------------------------------------------------------ */
+
+.boot-help {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.boot-help__card {
+  width: 100%;
+  max-width: 560px;
+  padding: 1.6rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 0.95);
+}
+
+.boot-help__card .brand {
+  margin-bottom: 1.1rem;
+}
+
+.boot-help__card h1 {
+  margin-bottom: 0.6rem;
+  font-size: 1.5rem;
+}
+
+.boot-help__card p {
+  margin-bottom: 0.7rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.boot-help__card strong {
+  color: var(--text);
+}
+
+.boot-help__label {
+  margin-bottom: 0.25rem !important;
+  color: var(--muted-2) !important;
+  font-size: 0.72rem !important;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.boot-help__card pre {
+  margin: 0.4rem 0 0.9rem;
+  padding: 0.7rem 0.8rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-2);
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.boot-help__card a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrar / criar conta                                                */
+/* ------------------------------------------------------------------ */
+
+.auth {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: 2rem 1rem 3rem;
+}
+
+body.is-auth .toasts {
+  bottom: calc(0.9rem + env(safe-area-inset-bottom));
+}
+
+.auth__inner {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 2.6rem;
+  align-items: center;
+}
+
+.auth__intro .brand {
+  margin-bottom: 1.5rem;
+}
+
+.auth__kicker {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.auth__intro h1 {
+  margin: 0.55rem 0 0.8rem;
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  font-weight: 780;
+}
+
+.auth__intro h1 strong {
+  color: var(--accent);
+}
+
+.auth__sub {
+  max-width: 48ch;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.auth__benefits {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auth__benefits li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-size: 0.87rem;
+}
+
+.auth__benefits .icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: var(--safe);
+}
+
+.auth__privacy {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--muted-2);
+  font-size: 0.74rem;
+}
+
+.auth__privacy .icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+.auth__card {
+  padding: 1.6rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.74), rgba(22, 32, 51, 0.94));
+  box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 0.95);
+}
+
+.auth__tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.2rem;
+  margin-bottom: 1.35rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-2);
+}
+
+.auth__tabs button {
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.auth__tabs button.is-active {
+  background: var(--surface-3);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.auth__card h2 {
+  font-size: 1.5rem;
+}
+
+.auth__hint {
+  margin: 0.35rem 0 1.15rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.auth__card .field {
+  margin-bottom: 0.9rem;
+}
+
+.auth__error {
+  margin: 0 0 0.85rem;
+}
+
+.auth__submit {
+  width: 100%;
+  margin-top: 0.15rem;
+}
+
+.auth__submit.is-busy {
+  opacity: 0.75;
+  cursor: progress;
+}
+
+.auth__switch {
+  margin-top: 1.1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.auth__switch .link-btn {
+  font-size: 0.82rem;
+}
+
+.auth__note {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 1.1rem;
+  padding-top: 0.95rem;
+  border-top: 1px solid var(--border-soft);
+  color: var(--muted-2);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.auth__note .icon {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+}
+
+.auth__banner {
+  margin-bottom: 1rem;
+}
+
+/* Campo com ícone e botão de mostrar senha */
+.input-icon {
+  position: relative;
+  display: block;
+}
+
+.input-icon > .icon {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  color: var(--muted-2);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.input-icon input {
+  width: 100%;
+  padding: 0.72rem 0.8rem 0.72rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--bg-2);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.input-icon input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+}
+
+.input-icon--password input {
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.3rem;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.password-toggle .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Onboarding                                                          */
+/* ------------------------------------------------------------------ */
+
+.onboarding {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: 2rem 1rem 3rem;
+}
+
+.onboarding__inner {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.onboarding__header {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.onboarding__header .brand {
+  justify-content: center;
+  margin-bottom: 1.4rem;
+}
+
+.onboarding__kicker {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.onboarding__header h1 {
+  margin: 0.5rem 0 0.7rem;
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 780;
+}
+
+.onboarding__header h1 strong {
+  color: var(--accent);
+}
+
+.onboarding__sub {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.onboarding__card {
+  margin-top: 1.8rem;
+  padding: 1.4rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.72), rgba(22, 32, 51, 0.92));
+  box-shadow: 0 30px 70px -40px rgba(0, 0, 0, 0.95);
+}
+
+.steps {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0 1.4rem;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  color: var(--muted-2);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.step__mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.step__mark .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.step.is-current {
+  color: var(--text);
+}
+
+.step.is-current .step__mark {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+}
+
+.step.is-done .step__mark {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.14);
+  color: var(--safe);
+}
+
+.onboarding__step h2 {
+  margin: 0.35rem 0 0.4rem;
+  font-size: 1.4rem;
+}
+
+.step__sub {
+  margin-bottom: 1.2rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.onboarding__step .field + .field-group,
+.onboarding__step .field-group + .field {
+  margin-top: 1.2rem;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.option-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.option:hover {
+  border-color: #40577a;
+  transform: translateY(-1px);
+}
+
+.option input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.option.is-selected {
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.25);
+}
+
+.option__title {
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.option__hint {
+  color: var(--muted-2);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.preview-periods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.subject-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.subject-groups {
+  display: grid;
+  gap: 1rem;
+}
+
+.subject-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.subject-group legend {
+  margin-bottom: 0.45rem;
+  padding: 0;
+  color: var(--muted-2);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.check-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.83rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.check-chip input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.check-chip::before {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--muted-2);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.check-chip.is-checked {
+  border-color: rgba(56, 189, 248, 0.55);
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--text);
+}
+
+.check-chip.is-checked::before {
+  content: "✓";
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.check-chip:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.picker-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.picker-count {
+  margin-left: auto;
+  color: var(--muted-2);
+  font-size: 0.75rem;
+}
+
+.inline-add {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.inline-add input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--bg-2);
+  color: var(--text);
+}
+
+.inline-add input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+}
+
+.onboarding__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.onboarding__step-hint {
+  color: var(--muted-2);
+  font-size: 0.75rem;
+}
+
+.onboarding__privacy {
+  margin-top: 1.2rem;
+  text-align: center;
+  color: var(--muted-2);
+  font-size: 0.74rem;
+}
+
+.onboarding__privacy .icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: 0.2rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Dashboard                                                           */
+/* ------------------------------------------------------------------ */
+
+.hero-card {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 1.4rem;
+  padding: 1.4rem;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 22px;
+  background:
+    radial-gradient(500px 260px at 0% 0%, rgba(56, 189, 248, 0.14), transparent 70%),
+    linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(18, 28, 46, 0.95));
+  box-shadow: 0 26px 60px -40px rgba(56, 189, 248, 0.5);
+}
+
+.hero-card__content {
+  min-width: 0;
+}
+
+.hero-card__label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.hero-card__value {
+  margin: 0.25rem 0 0.1rem;
+  font-size: clamp(3rem, 10vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.hero-card__value small {
+  margin-left: 0.25rem;
+  color: var(--muted-2);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.hero-card__hint {
+  margin-bottom: 1.1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.hero-card__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  align-content: center;
+}
+
+.mini-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: rgba(11, 18, 32, 0.4);
+}
+
+.mini-stat strong {
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.mini-stat span {
+  color: var(--muted-2);
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mini-stat--safe strong {
+  color: var(--safe);
+}
+
+.mini-stat--attention strong {
+  color: var(--attention);
+}
+
+.mini-stat--risk strong {
+  color: var(--risk);
+}
+
+.mini-stat--critical strong {
+  color: var(--critical);
+}
+
+.callout {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.callout__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--muted);
+}
+
+.callout__icon .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.callout__body strong {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.callout__body p {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.callout--risk {
+  border-color: rgba(251, 146, 60, 0.28);
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.09), rgba(248, 113, 113, 0.05));
+}
+
+.callout--risk .callout__icon {
+  background: rgba(251, 146, 60, 0.14);
+  color: var(--risk);
+}
+
+.callout--safe {
+  border-color: rgba(52, 211, 153, 0.24);
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.callout--safe .callout__icon {
+  background: rgba(52, 211, 153, 0.14);
+  color: var(--safe);
+}
+
+.alert-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.alert-chips .chip small::before {
+  content: "· ";
+}
+
+.accumulated-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  color: var(--attention);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.accumulated-note .icon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+.empty-card {
+  margin-top: 1rem;
+  padding: 1.8rem 1.4rem;
+  border: 1px dashed var(--border);
+  border-radius: 18px;
+  background: rgba(22, 32, 51, 0.5);
+  text-align: center;
+}
+
+.empty-card__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 0.6rem;
+  border-radius: 14px;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent);
+}
+
+.empty-card__icon .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.empty-card h2 {
+  font-size: 1.2rem;
+}
+
+.empty-card p {
+  max-width: 46ch;
+  margin: 0.35rem auto 1rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.subject-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.subject-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--status-color, var(--border));
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.subject-row[data-status="safe"] {
+  --status-color: var(--safe);
+}
+
+.subject-row[data-status="attention"] {
+  --status-color: var(--attention);
+}
+
+.subject-row[data-status="risk"] {
+  --status-color: var(--risk);
+}
+
+.subject-row[data-status="critical"] {
+  --status-color: var(--critical);
+}
+
+.subject-row[data-status="empty"] {
+  --status-color: var(--border);
+}
+
+.subject-row:hover {
+  transform: translateY(-1px);
+  border-color: #3d5375;
+  border-left-color: var(--status-color, var(--accent));
+  background: var(--surface-2);
+}
+
+.subject-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.subject-row__line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.subject-row__name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.subject-row__stats {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.subject-row__stats strong {
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.subject-row__needed {
+  color: var(--muted);
+}
+
+.subject-row[data-status="attention"] .subject-row__needed {
+  color: var(--attention);
+}
+
+.subject-row[data-status="risk"] .subject-row__needed {
+  color: var(--risk);
+}
+
+.subject-row[data-status="critical"] .subject-row__needed {
+  color: var(--critical);
+}
+
+.subject-row__dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.period-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.55rem;
+  height: 1.3rem;
+  padding: 0 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: rgba(148, 163, 184, 0.06);
+  color: var(--muted-2);
+  font-size: 0.61rem;
+  font-weight: 700;
+}
+
+.period-dot--safe {
+  border-color: rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.11);
+  color: var(--safe);
+}
+
+.period-dot--attention {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--attention);
+}
+
+.period-dot--critical {
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--critical);
+}
+
+.period-dot--empty {
+  color: var(--muted-2);
+}
+
+.subject-row__side {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 0 0 auto;
+}
+
+.subject-row__arrow {
+  color: var(--muted-2);
+}
+
+.subject-row__arrow .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+.quick-action {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.quick-action:hover {
+  border-color: #3d5375;
+  background: var(--surface-2);
+  transform: translateY(-1px);
+}
+
+.quick-action__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--accent);
+}
+
+.quick-action__icon .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.quick-action strong {
+  display: block;
+  font-size: 0.82rem;
+}
+
+.quick-action small {
+  display: block;
+  color: var(--muted-2);
+  font-size: 0.68rem;
+}
+
+.explainer {
+  margin-top: 1.6rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  background: rgba(22, 32, 51, 0.55);
+}
+
+.explainer summary {
+  padding: 0.8rem 1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.explainer[open] summary {
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text);
+}
+
+.explainer__body {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.explainer__body strong {
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------------ */
+/* Notas                                                               */
+/* ------------------------------------------------------------------ */
+
+.notes-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.notes-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.subject-card {
+  --status-color: var(--empty);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--status-color);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.subject-card[data-status="safe"] {
+  --status-color: var(--safe);
+}
+
+.subject-card[data-status="attention"] {
+  --status-color: var(--attention);
+}
+
+.subject-card[data-status="risk"] {
+  --status-color: var(--risk);
+}
+
+.subject-card[data-status="critical"] {
+  --status-color: var(--critical);
+}
+
+.subject-card.is-open {
+  border-color: var(--border);
+  border-left-color: var(--status-color);
+}
+
+.subject-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+
+.subject-card__head:hover {
+  background: rgba(148, 163, 184, 0.04);
+}
+
+.subject-card__identity {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.subject-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.subject-card__flags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.subject-card__summary {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 0 0 auto;
+}
+
+.subject-card__avg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+
+.subject-card__avg strong {
+  font-size: 1.1rem;
+}
+
+.subject-card__avg small {
+  color: var(--muted-2);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chevron {
+  color: var(--muted-2);
+  transition: transform 0.2s ease;
+}
+
+.chevron .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.subject-card.is-open .chevron {
+  transform: rotate(180deg);
+}
+
+.subject-card__body {
+  padding: 0 1rem 1.1rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.subject-progress {
+  display: grid;
+  gap: 0.45rem;
+  padding-top: 0.9rem;
+}
+
+.subject-card__needed {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.subject-card[data-status="attention"] .subject-card__needed {
+  color: var(--attention);
+}
+
+.subject-card[data-status="risk"] .subject-card__needed {
+  color: var(--risk);
+}
+
+.subject-card[data-status="critical"] .subject-card__needed {
+  color: var(--critical);
+}
+
+.period {
+  margin-top: 0.85rem;
+  padding: 0.85rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  background: rgba(11, 18, 32, 0.32);
+}
+
+.period__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.period__title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.period__title h3 {
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.period__dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--empty);
+}
+
+.period__dot--safe {
+  background: var(--safe);
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.12);
+}
+
+.period__dot--attention {
+  background: var(--attention);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.12);
+}
+
+.period__dot--critical {
+  background: var(--critical);
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12);
+}
+
+.period__dot--empty {
+  background: var(--empty);
+}
+
+.period__stats {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.period__avg {
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+
+.weight-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--muted-2);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.weight-field input {
+  width: 3.8rem;
+  padding: 0.28rem 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg-2);
+  color: var(--text);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.period__needed {
+  margin-top: 0.3rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.assessment-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.7rem 0;
+}
+
+.assessment {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.4rem 4.4rem 2.1rem;
+  align-items: end;
+  gap: 0.5rem;
+  padding: 0.5rem 0.55rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.assessment__name {
+  width: 100%;
+  min-width: 0;
+  padding: 0.42rem 0.35rem;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.assessment__name:hover {
+  border-color: var(--border);
+}
+
+.assessment__name:focus {
+  border-color: var(--accent);
+  background: var(--bg-2);
+  outline: none;
+}
+
+.mini-field {
+  display: grid;
+  gap: 0.12rem;
+  color: var(--muted-2);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mini-field input {
+  width: 100%;
+  padding: 0.38rem 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--bg-2);
+  color: var(--text);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.mini-field--grade input {
+  color: var(--accent);
+  font-weight: 750;
+}
+
+.mini-field input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.13);
+}
+
+.assessment .icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.assessment .icon-btn .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.subject-card__hint {
+  margin-top: 0.8rem;
+  color: var(--muted-2);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.empty-search {
+  padding: 2rem 1rem;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Simulador                                                           */
+/* ------------------------------------------------------------------ */
+
+.panel {
+  margin-bottom: 1rem;
+  padding: 1.15rem;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel__head h2 {
+  margin-top: 0.15rem;
+  font-size: 1.2rem;
+}
+
+.panel__text {
+  margin-bottom: 0.9rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.panel--danger {
+  border-color: rgba(248, 113, 113, 0.28);
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.07), rgba(22, 32, 51, 0.9));
+}
+
+.needed-panel {
+  background:
+    radial-gradient(500px 220px at 100% 0%, rgba(56, 189, 248, 0.11), transparent 70%),
+    linear-gradient(145deg, rgba(30, 41, 59, 0.92), rgba(20, 30, 49, 0.96));
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+.needed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.needed-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: rgba(11, 18, 32, 0.38);
+}
+
+.needed-stat__label {
+  color: var(--muted-2);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.needed-stat__value {
+  font-size: 1.45rem;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.needed-stat small {
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.tone--safe {
+  color: var(--safe);
+}
+
+.tone--attention {
+  color: var(--attention);
+}
+
+.tone--risk {
+  color: var(--risk);
+}
+
+.tone--critical {
+  color: var(--critical);
+}
+
+.tone--empty {
+  color: var(--muted-2);
+}
+
+.needed-panel .hint {
+  margin-top: 0.8rem;
+}
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-2);
+}
+
+.segmented button {
+  flex: 1;
+  padding: 0.42rem 0.55rem;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.segmented button.is-active {
+  background: var(--surface-3);
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.grade-control {
+  margin-top: 1.1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  background: rgba(11, 18, 32, 0.32);
+}
+
+.grade-control__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.grade-control__value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.grade-control__value input {
+  width: 4.6rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.grade-control__value input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 8px;
+  margin: 0.35rem 0 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0%,
+    var(--accent) var(--fill, 70%),
+    #0a1424 var(--fill, 70%),
+    #0a1424 100%
+  );
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 4px solid var(--accent);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 4px solid var(--accent);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.grade-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.preset {
+  min-width: 2.4rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.preset:hover {
+  color: var(--text);
+  border-color: #3d5375;
+}
+
+.preset.is-active {
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.14);
+  color: var(--accent);
+}
+
+.sim-summary {
+  margin-top: 1.2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.sim-summary__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.sim-summary__label {
+  color: var(--muted-2);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.delta {
+  padding: 0.18rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.delta--up {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--safe);
+}
+
+.delta--down {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--critical);
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem;
+}
+
+.compare {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 11px;
+  background: rgba(11, 18, 32, 0.3);
+}
+
+.compare__label {
+  color: var(--muted-2);
+  font-size: 0.64rem;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.compare__values {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 1.05rem;
+}
+
+.compare__values strong {
+  font-weight: 750;
+}
+
+.compare__arrow {
+  color: var(--muted-2);
+}
+
+.compare__after {
+  color: var(--accent);
+}
+
+.sim-sentence {
+  margin-top: 0.9rem;
+  color: var(--muted);
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+
+.sim-sentence strong {
+  color: var(--text);
+}
+
+.sim-outcome {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 11px;
+  background: rgba(148, 163, 184, 0.05);
+}
+
+.sim-outcome p {
+  flex: 1;
+  min-width: 180px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.sim-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.sim-empty .icon {
+  width: 30px;
+  height: 30px;
+  color: var(--accent);
+}
+
+.sim-empty h3 {
+  font-size: 1rem;
+}
+
+.sim-empty p {
+  max-width: 40ch;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Ajustes                                                             */
+/* ------------------------------------------------------------------ */
+
+.settings-subjects {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: rgba(11, 18, 32, 0.35);
+}
+
+.account-row__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--accent);
+}
+
+.account-row__icon .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.account-row__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.account-row__body strong {
+  overflow: hidden;
+  font-size: 0.85rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-row__body small {
+  color: var(--muted-2);
+  font-size: 0.7rem;
+}
+
+.settings-subject {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.settings-subject input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-2);
+  color: var(--text);
+}
+
+.settings-subject input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.13);
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.privacy-note {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.2rem;
+  color: var(--muted-2);
+  font-size: 0.73rem;
+}
+
+.privacy-note .icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* Toasts e diálogo                                                    */
+/* ------------------------------------------------------------------ */
+
+.toasts {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(var(--tabbar-h) + 0.8rem + env(safe-area-inset-bottom));
+  left: 1rem;
+  z-index: 100;
+  display: grid;
+  justify-items: end;
+  gap: 0.45rem;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-width: min(420px, 100%);
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.97);
+  color: var(--text);
+  font-size: 0.8rem;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.9);
+  pointer-events: auto;
+  animation: toast-in 0.22s ease both;
+}
+
+.toast__dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  margin-top: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.toast--success .toast__dot {
+  background: var(--safe);
+}
+
+.toast--warn .toast__dot {
+  background: var(--attention);
+}
+
+.toast--error .toast__dot {
+  background: var(--critical);
+}
+
+.toast.is-leaving {
+  animation: toast-out 0.2s ease both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.dialog {
+  width: min(430px, calc(100vw - 2rem));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.95);
+}
+
+.dialog::backdrop {
+  background: rgba(4, 8, 16, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.dialog__form {
+  padding: 1.35rem;
+}
+
+.dialog__title {
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+}
+
+.dialog__message {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsivo                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (min-width: 861px) {
+  .view {
+    padding: 2.4rem 1.5rem 4rem;
+  }
+
+  .tabbar {
+    display: none;
+  }
+
+  .toasts {
+    left: auto;
+    bottom: 1.2rem;
+    width: 380px;
+  }
+}
+
+@media (max-width: 860px) {
+  .topnav {
+    display: none;
+  }
+
+  .auth {
+    align-items: flex-start;
+    padding-top: 1.1rem;
+  }
+
+  .auth__inner {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+    max-width: 560px;
+  }
+
+  .auth__intro .brand {
+    margin-bottom: 0.6rem;
+  }
+
+  .auth__intro .brand--lg .brand__mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 1.05rem;
+  }
+
+  .auth__kicker,
+  .auth__sub,
+  .auth__benefits {
+    display: none;
+  }
+
+  .auth__intro h1 {
+    margin: 0.2rem 0 0.5rem;
+    font-size: clamp(1.55rem, 5.6vw, 2rem);
+  }
+
+  .auth__privacy {
+    margin-top: 0.45rem;
+    font-size: 0.7rem;
+  }
+
+  .auth__card {
+    padding: 1.2rem;
+  }
+
+  .auth__tabs {
+    margin-bottom: 1rem;
+  }
+
+  .auth__card h2 {
+    font-size: 1.3rem;
+  }
+
+  .auth__hint {
+    margin-bottom: 0.9rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-card__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mini-stat {
+    padding: 0.55rem 0.45rem;
+  }
+
+  .mini-stat strong {
+    font-size: 1.15rem;
+  }
+
+  .mini-stat span {
+    font-size: 0.58rem;
+  }
+
+  .option-grid--3 {
+    grid-template-columns: 1fr;
+  }
+
+  .needed-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .needed-stat {
+    flex-direction: row;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+  }
+
+  .needed-stat__value {
+    font-size: 1.2rem;
+  }
+
+  .needed-stat small {
+    flex-basis: 100%;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .onboarding {
+    align-items: flex-start;
+    padding-top: 1.5rem;
+  }
+
+  .onboarding__card {
+    padding: 1.1rem;
+    border-radius: 20px;
+  }
+
+  .auth__card {
+    padding: 1.2rem;
+    border-radius: 20px;
+  }
+
+  .option-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-chip small {
+    display: none;
+  }
+
+  .brand__text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .assessment {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 2.1rem;
+    grid-template-areas:
+      "name name remove"
+      "weight grade remove";
+    align-items: end;
+  }
+
+  .assessment__name {
+    grid-area: name;
+  }
+
+  .assessment .mini-field:not(.mini-field--grade) {
+    grid-area: weight;
+  }
+
+  .assessment .mini-field--grade {
+    grid-area: grade;
+  }
+
+  .assessment .icon-btn {
+    grid-area: remove;
+    align-self: center;
+  }
+
+  .subject-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .subject-row__side {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .subject-row__arrow {
+    transform: rotate(90deg);
+  }
+
+  .notes-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .notes-toolbar .btn {
+    align-self: flex-start;
+  }
+
+  .inline-add {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inline-add .btn {
+    width: 100%;
+  }
+
+  .subject-card__head {
+    align-items: flex-start;
+  }
+
+  .subject-card__summary {
+    gap: 0.45rem;
+  }
+
+  .subject-card__avg small {
+    display: none;
+  }
+
+  .subject-card__avg strong {
+    font-size: 1rem;
+  }
+
+  .period__head {
+    align-items: flex-start;
+  }
+
+  .grade-control {
+    padding: 0.8rem;
+  }
+
+  .onboarding__actions .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-card__value {
+    font-size: 3.2rem;
+  }
+
+  .topbar .brand__text {
+    display: none;
+  }
+
+  .page-head h1 {
+    font-size: 1.6rem;
+  }
+
+  .callout {
+    padding: 0.8rem;
+  }
+
+  .subject-card__summary .pill {
+    font-size: 0.62rem;
+    padding: 0.18rem 0.4rem;
+  }
+
+  .period {
+    padding: 0.7rem;
+  }
+
+  .period__stats {
+    gap: 0.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+</style>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2338bdf8'/%3E%3Ctext x='32' y='45' font-family='system-ui,sans-serif' font-size='36' font-weight='700' text-anchor='middle' fill='%230f172a'%3EC%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <div id="app" class="app">
+    <noscript>
+      <div class="noscript">
+        <strong>O App CEPK precisa de JavaScript.</strong>
+        <p>Ative o JavaScript no navegador para registrar suas notas e ver os cálculos.</p>
+      </div>
+    </noscript>
+    <section id="auth" class="auth" aria-label="Entrar ou criar conta" hidden></section>
+    <section id="onboarding" class="onboarding" aria-label="Configuração inicial" hidden></section>
+
+    <section id="boot-help" class="boot-help" aria-live="polite" hidden>
+      <div class="boot-help__card">
+        <span class="brand brand--lg">
+          <span class="brand__mark" aria-hidden="true">C</span>
+          <span class="brand__text">App <strong>CEPK</strong></span>
+        </span>
+        <h1>A tela não carregou</h1>
+        <p>
+          Este arquivo precisa ser aberto por um endereço <strong>http://</strong>.
+          Abrir o <code>index.html</code> direto pelo disco (<code>file://</code>) faz o
+          navegador bloquear os scripts do app.
+        </p>
+        <p class="boot-help__label">Opção mais fácil:</p>
+        <p>Abra o arquivo <strong>app-cepk.html</strong> (versão de arquivo único) com dois cliques.</p>
+        <p class="boot-help__label">Ou inicie um servidor local na pasta do projeto:</p>
+        <pre><code>python3 -m http.server 8000</code></pre>
+        <p>Depois acesse <a href="http://localhost:8000">http://localhost:8000</a>.</p>
+      </div>
+    </section>
+
+    <div id="workspace" class="workspace" hidden>
+      <header class="topbar">
+        <a class="brand" href="#/inicio" aria-label="App CEPK — início">
+          <span class="brand__mark" aria-hidden="true">C</span>
+          <span class="brand__text">App <strong>CEPK</strong></span>
+        </a>
+
+        <nav id="topnav" class="topnav" aria-label="Navegação principal"></nav>
+
+        <div class="topbar__meta">
+          <span id="student-chip" class="student-chip"></span>
+          <button class="icon-btn" type="button" data-action="export" title="Exportar backup" aria-label="Exportar backup em JSON">
+            <span data-icon="download" aria-hidden="true"></span>
+          </button>
+        </div>
+      </header>
+
+      <main id="view" class="view" tabindex="-1"></main>
+
+      <nav id="tabbar" class="tabbar" aria-label="Navegação principal"></nav>
+    </div>
+
+    <div id="toasts" class="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
+
+    <dialog id="dialog" class="dialog" aria-labelledby="dialog-title">
+      <form method="dialog" class="dialog__form">
+        <h2 id="dialog-title" class="dialog__title"></h2>
+        <p class="dialog__message"></p>
+        <div class="dialog__actions">
+          <button class="btn btn--ghost" value="cancel" type="submit">Cancelar</button>
+          <button class="btn btn--primary dialog__confirm" value="confirm" type="submit">Confirmar</button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+
+  <script>
+    // Se os módulos não carregarem (ex.: aberto por file://), mostra instruções
+    // em vez de deixar a página vazia com o fundo azul.
+    (function () {
+      var help = document.getElementById("boot-help");
+      function appStarted() {
+        return (
+          document.getElementById("auth").childElementCount > 0 ||
+          document.getElementById("onboarding").childElementCount > 0 ||
+          !document.getElementById("workspace").hidden
+        );
+      }
+      function showHelp() {
+        if (!appStarted()) help.hidden = false;
+      }
+      window.addEventListener(
+        "error",
+        function (event) {
+          if (event.target && event.target.tagName === "SCRIPT") showHelp();
+        },
+        true,
+      );
+      if (window.location.protocol === "file:") window.setTimeout(showHelp, 300);
+      window.setTimeout(showHelp, 3000);
+    })();
+  </script>
+  <script type="module">
+/* src/calc.js */
+// Motor de cálculo do App CEPK.
+// Funções puras, sem acesso ao DOM ou ao localStorage — por isso são testáveis no Node.
+
+const MIN_GRADE = 0;
+const MAX_GRADE = 10;
+const EPSILON = 1e-9;
+
+/* ------------------------------------------------------------------ */
+/* Números e formatação                                                */
+/* ------------------------------------------------------------------ */
+
+/** Converte "7,5", "7.5" ou 7.5 em número. Retorna null para vazio/inválido. */
+function toNumber(value) {
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim().replace(",", ".");
+  if (!trimmed) return null;
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+/** Limita uma nota ao intervalo 0–10. Notas vazias viram null. */
+function clampGrade(value) {
+  const number = toNumber(value);
+  if (number === null) return null;
+  return Math.min(MAX_GRADE, Math.max(MIN_GRADE, number));
+}
+
+/** Peso válido: números positivos. Qualquer outra coisa vale 0 (ignorado). */
+function safeWeight(value) {
+  const number = toNumber(value);
+  return number !== null && number > 0 ? number : 0;
+}
+
+function roundTo(value, decimals = 1) {
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
+}
+
+/** Arredonda para cima (6,34 → 6,4), tolerando imprecisão de ponto flutuante. */
+function ceilTo(value, decimals = 1) {
+  const factor = 10 ** decimals;
+  return Math.ceil(value * factor - 1e-7) / factor;
+}
+
+const gradeFormatter = new Intl.NumberFormat("pt-BR", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+/** 7.5 → "7,5"; null → "—". */
+function formatGrade(value) {
+  return value === null || value === undefined || !Number.isFinite(value)
+    ? "—"
+    : gradeFormatter.format(value);
+}
+
+/** Valor para preencher um input de nota, com vírgula e sem zeros inúteis. */
+function gradeToInput(value) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return "";
+  return String(roundTo(value, 2)).replace(".", ",");
+}
+
+/* ------------------------------------------------------------------ */
+/* Nota necessária                                                     */
+/* ------------------------------------------------------------------ */
+
+function result(base, status, required, raw) {
+  return { ...base, status, required, raw };
+}
+
+/**
+ * Nota mínima uniforme nas avaliações restantes para alcançar a meta.
+ *
+ *   n = (meta × (P + F) − S) / F
+ *
+ * S = soma ponderada já obtida, P = peso já lançado, F = peso restante.
+ * Status:
+ *  - empty:      nenhum peso válido
+ *  - guaranteed: já atingiu a meta mesmo tirando 0 no que falta
+ *  - possible:   precisa de uma nota entre 0 e 10
+ *  - impossible: precisaria de mais de 10
+ */
+function requiredGrade({ target, sumWeighted = 0, doneWeight = 0, remainingWeight = 0 }) {
+  const meta = toNumber(target) ?? 0;
+  const sum = toNumber(sumWeighted) ?? 0;
+  const done = Math.max(0, toNumber(doneWeight) ?? 0);
+  const remaining = Math.max(0, toNumber(remainingWeight) ?? 0);
+  const total = done + remaining;
+  const base = {
+    target: meta,
+    sumWeighted: sum,
+    doneWeight: done,
+    remainingWeight: remaining,
+    totalWeight: total,
+    average: done > EPSILON ? sum / done : null,
+  };
+
+  if (total <= EPSILON) return result(base, "empty", null, null);
+
+  if (remaining <= EPSILON) {
+    const reached = base.average !== null && base.average + EPSILON >= meta;
+    return reached
+      ? result(base, "guaranteed", 0, 0)
+      : result(base, "impossible", null, Infinity);
+  }
+
+  const raw = (meta * total - sum) / remaining;
+
+  if (raw <= EPSILON) return result(base, "guaranteed", 0, Math.max(0, raw));
+  if (raw > MAX_GRADE + EPSILON) return result(base, "impossible", null, raw);
+
+  return result(base, "possible", Math.min(MAX_GRADE, ceilTo(raw, 1)), raw);
+}
+
+/**
+ * Nota mínima apenas na próxima avaliação, assumindo que as seguintes
+ * serão tiradas exatamente na meta.
+ */
+function requiredForNext({
+  target,
+  sumWeighted = 0,
+  doneWeight = 0,
+  remainingWeight = 0,
+  nextWeight = 0,
+}) {
+  const next = Math.max(0, toNumber(nextWeight) ?? 0);
+  const remaining = Math.max(0, toNumber(remainingWeight) ?? 0);
+
+  if (next <= 0 || next > remaining + EPSILON) {
+    return requiredGrade({ target, sumWeighted, doneWeight, remainingWeight });
+  }
+
+  const meta = toNumber(target) ?? 0;
+  const sum = toNumber(sumWeighted) ?? 0;
+  const done = Math.max(0, toNumber(doneWeight) ?? 0);
+  const total = done + remaining;
+  const later = Math.max(0, remaining - next);
+  const base = {
+    target: meta,
+    sumWeighted: sum,
+    doneWeight: done,
+    remainingWeight: remaining,
+    totalWeight: total,
+    average: done > EPSILON ? sum / done : null,
+    nextWeight: next,
+  };
+
+  const raw = (meta * total - sum - meta * later) / next;
+
+  if (raw <= EPSILON) return result(base, "guaranteed", 0, Math.max(0, raw));
+  if (raw > MAX_GRADE + EPSILON) return result(base, "impossible", null, raw);
+  return result(base, "possible", Math.min(MAX_GRADE, ceilTo(raw, 1)), raw);
+}
+
+/* ------------------------------------------------------------------ */
+/* Períodos e matérias                                                 */
+/* ------------------------------------------------------------------ */
+
+function isGraded(assessment) {
+  return clampGrade(assessment?.grade) !== null;
+}
+
+/** Estatísticas de um bimestre/trimestre/semestre. */
+function periodStats(period, target) {
+  const assessments = Array.isArray(period?.assessments) ? period.assessments : [];
+  const weight = safeWeight(period?.weight) || 1;
+
+  let sumWeighted = 0;
+  let doneWeight = 0;
+  let remainingWeight = 0;
+  let gradedCount = 0;
+  let activeCount = 0;
+  let remainingCount = 0;
+  let nextAssessment = null;
+
+  for (const assessment of assessments) {
+    const assessmentWeight = safeWeight(assessment?.weight);
+    if (assessmentWeight <= 0) continue;
+    activeCount += 1;
+
+    const grade = clampGrade(assessment?.grade);
+    if (grade === null) {
+      remainingWeight += assessmentWeight;
+      remainingCount += 1;
+      if (!nextAssessment) nextAssessment = assessment;
+    } else {
+      sumWeighted += grade * assessmentWeight;
+      doneWeight += assessmentWeight;
+      gradedCount += 1;
+    }
+  }
+
+  const needed = requiredGrade({ target, sumWeighted, doneWeight, remainingWeight });
+  const nextNeeded = nextAssessment
+    ? requiredForNext({
+        target,
+        sumWeighted,
+        doneWeight,
+        remainingWeight,
+        nextWeight: safeWeight(nextAssessment.weight),
+      })
+    : null;
+
+  return {
+    id: period?.id ?? null,
+    name: period?.name ?? "",
+    weight,
+    average: doneWeight > 0 ? sumWeighted / doneWeight : null,
+    sumWeighted,
+    doneWeight,
+    remainingWeight,
+    totalWeight: doneWeight + remainingWeight,
+    gradedCount,
+    remainingCount,
+    activeCount,
+    needed,
+    nextAssessment,
+    nextNeeded,
+    complete: activeCount > 0 && remainingWeight <= EPSILON,
+    hasGrades: doneWeight > 0,
+  };
+}
+
+/**
+ * Estatísticas anuais de uma matéria.
+ *
+ * Cada avaliação recebe um peso anual proporcional:
+ *   pesoAnual = pesoDoPeríodo × pesoDaAvaliação / somaDosPesosDoPeríodo
+ *
+ * Assim a soma dos pesos anuais de um período é igual ao peso do período,
+ * e a média anual é a média ponderada das avaliações.
+ */
+function subjectStats(subject, target) {
+  const periods = Array.isArray(subject?.periods) ? subject.periods : [];
+  const periodResults = periods.map((period) => periodStats(period, target));
+
+  let sumWeighted = 0;
+  let doneWeight = 0;
+  let remainingWeight = 0;
+
+  periods.forEach((period, index) => {
+    const periodWeight = safeWeight(period?.weight);
+    if (periodWeight <= 0) return;
+
+    const assessments = Array.isArray(period.assessments) ? period.assessments : [];
+    const assessmentTotal = assessments.reduce(
+      (total, assessment) => total + safeWeight(assessment?.weight),
+      0,
+    );
+
+    if (assessmentTotal <= EPSILON) {
+      remainingWeight += periodWeight;
+      return;
+    }
+
+    for (const assessment of assessments) {
+      const assessmentWeight = safeWeight(assessment?.weight);
+      if (assessmentWeight <= 0) continue;
+      const annualWeight = (periodWeight * assessmentWeight) / assessmentTotal;
+      const grade = clampGrade(assessment?.grade);
+      if (grade === null) {
+        remainingWeight += annualWeight;
+      } else {
+        sumWeighted += grade * annualWeight;
+        doneWeight += annualWeight;
+      }
+    }
+  });
+
+  const needed = requiredGrade({ target, sumWeighted, doneWeight, remainingWeight });
+  const closedPeriods = periodResults.filter(
+    (period) => period.complete && period.hasGrades && period.weight > 0,
+  );
+  const accumulatedPeriods = closedPeriods.filter(
+    (period) => period.average !== null && period.average + EPSILON < (toNumber(target) ?? 0),
+  );
+  const accumulatedDeficit = accumulatedPeriods.reduce(
+    (total, period) => total + ((toNumber(target) ?? 0) - period.average) * period.weight,
+    0,
+  );
+
+  return {
+    id: subject?.id ?? null,
+    name: subject?.name ?? "",
+    periods: periodResults,
+    average: doneWeight > 0 ? sumWeighted / doneWeight : null,
+    sumWeighted,
+    doneWeight,
+    remainingWeight,
+    totalWeight: doneWeight + remainingWeight,
+    needed,
+    complete: remainingWeight <= EPSILON && doneWeight > 0,
+    closedPeriods,
+    accumulatedPeriods,
+    accumulatedDeficit,
+    hasAccumulated: accumulatedPeriods.length > 0,
+  };
+}
+
+/**
+ * Classificação usada nos alertas:
+ *  - safe:      meta garantida ou já está acima da meta
+ *  - attention: precisa recuperar, mas a nota exigida é ≤ meta
+ *  - risk:      precisa de nota acima da meta
+ *  - critical:  impossível alcançar a meta no ano
+ *  - empty:     ainda sem notas
+ */
+function classifySubject(stats, target) {
+  const meta = toNumber(target) ?? 0;
+  if (stats.average === null || stats.needed.status === "empty") return "empty";
+  if (stats.needed.status === "guaranteed") return "safe";
+  if (stats.needed.status === "impossible") return "critical";
+  if (stats.average + EPSILON >= meta) return "safe";
+  // A partir daqui o aluno está abaixo da meta. Exigir 8,0 ou mais
+  // nas avaliações restantes é tratado como risco alto.
+  if (stats.needed.required !== null && stats.needed.required >= 8) return "risk";
+  return "attention";
+}
+
+const SEVERITY = { critical: 3, risk: 2, attention: 1, safe: 0, empty: 0 };
+
+/** Resumo do ano inteiro: média geral, contagens e matérias que pedem atenção. */
+function yearStats(subjects, target) {
+  const items = (subjects ?? []).map((subject) => {
+    const stats = subjectStats(subject, target);
+    return {
+      ...stats,
+      subject,
+      status: classifySubject(stats, target),
+    };
+  });
+
+  const withGrades = items.filter((item) => item.average !== null);
+  const average = withGrades.length
+    ? withGrades.reduce((total, item) => total + item.average, 0) / withGrades.length
+    : null;
+
+  const counts = { safe: 0, attention: 0, risk: 0, critical: 0, empty: 0 };
+  for (const item of items) counts[item.status] += 1;
+
+  const alerts = items
+    .filter((item) => item.status === "attention" || item.status === "risk" || item.status === "critical")
+    .sort((a, b) => SEVERITY[b.status] - SEVERITY[a.status]);
+
+  const accumulated = items.filter((item) => item.hasAccumulated);
+
+  return {
+    items,
+    average,
+    counts,
+    alerts,
+    accumulated,
+    target: toNumber(target) ?? 0,
+    total: items.length,
+    withGrades: withGrades.length,
+  };
+}
+
+/** Primeira avaliação ainda sem nota, na ordem dos períodos. */
+function nextUngraded(subject) {
+  const periods = Array.isArray(subject?.periods) ? subject.periods : [];
+  for (const period of periods) {
+    const assessments = Array.isArray(period.assessments) ? period.assessments : [];
+    for (const assessment of assessments) {
+      if (safeWeight(assessment.weight) > 0 && !isGraded(assessment)) {
+        return { period, assessment };
+      }
+    }
+  }
+  return null;
+}
+
+/* ------------------------------------------------------------------ */
+/* Simulador                                                           */
+/* ------------------------------------------------------------------ */
+
+/** Devolve uma cópia da matéria com a nota de uma avaliação alterada. */
+function applyGrade(subject, periodId, assessmentId, grade) {
+  const value = clampGrade(grade);
+  return {
+    ...subject,
+    periods: (subject.periods ?? []).map((period) =>
+      period.id !== periodId
+        ? period
+        : {
+            ...period,
+            assessments: (period.assessments ?? []).map((assessment) =>
+              assessment.id !== assessmentId ? assessment : { ...assessment, grade: value },
+            ),
+          },
+    ),
+  };
+}
+
+/** Devolve uma cópia da matéria com a mesma nota em todas as avaliações restantes. */
+function applyGradeToRemaining(subject, grade) {
+  const value = clampGrade(grade);
+  return {
+    ...subject,
+    periods: (subject.periods ?? []).map((period) => ({
+      ...period,
+      assessments: (period.assessments ?? []).map((assessment) =>
+        isGraded(assessment) ? assessment : { ...assessment, grade: value },
+      ),
+    })),
+  };
+}
+
+/** Lista achatada de avaliações de uma matéria (para selects do simulador). */
+function listAssessments(subject) {
+  const list = [];
+  for (const period of subject?.periods ?? []) {
+    for (const assessment of period.assessments ?? []) {
+      list.push({
+        periodId: period.id,
+        periodName: period.name,
+        assessmentId: assessment.id,
+        assessmentName: assessment.name,
+        weight: safeWeight(assessment.weight),
+        grade: clampGrade(assessment.grade),
+        graded: isGraded(assessment),
+      });
+    }
+  }
+  return list;
+}
+
+/* src/store.js */
+// Camada de dados do App CEPK: padrões, localStorage e backup em JSON.
+// Nenhum dado sai do dispositivo do usuário.
+
+
+
+const STORAGE_KEY = "app-cepk:v1";
+const DATA_VERSION = 1;
+
+/** Cada conta local tem seu próprio conjunto de dados. */
+function dataKeyFor(accountId) {
+  return accountId ? `${STORAGE_KEY}:user:${accountId}` : STORAGE_KEY;
+}
+
+const STRUCTURES = {
+  bimestres: {
+    id: "bimestres",
+    label: "4 bimestres",
+    short: "Bimestres",
+    hint: "O mais comum no Fundamental e no Médio.",
+    names: ["1º Bimestre", "2º Bimestre", "3º Bimestre", "4º Bimestre"],
+  },
+  trimestres: {
+    id: "trimestres",
+    label: "3 trimestres",
+    short: "Trimestres",
+    hint: "Usado por algumas escolas e redes estaduais.",
+    names: ["1º Trimestre", "2º Trimestre", "3º Trimestre"],
+  },
+  semestres: {
+    id: "semestres",
+    label: "2 semestres",
+    short: "Semestres",
+    hint: "Duas etapas no ano.",
+    names: ["1º Semestre", "2º Semestre"],
+  },
+};
+
+const GRADE_LEVELS = [
+  {
+    id: "9f",
+    label: "9º ano do Fundamental",
+    short: "9º Fundamental",
+    subjects: [
+      "Português",
+      "Matemática",
+      "Ciências",
+      "História",
+      "Geografia",
+      "Inglês",
+      "Arte",
+      "Educação Física",
+    ],
+  },
+  {
+    id: "1m",
+    label: "1º ano do Médio",
+    short: "1º Médio",
+    subjects: [
+      "Português",
+      "Matemática",
+      "Biologia",
+      "Física",
+      "Química",
+      "História",
+      "Geografia",
+      "Filosofia",
+      "Sociologia",
+      "Inglês",
+      "Arte",
+      "Educação Física",
+    ],
+  },
+  {
+    id: "2m",
+    label: "2º ano do Médio",
+    short: "2º Médio",
+    subjects: [
+      "Português",
+      "Matemática",
+      "Biologia",
+      "Física",
+      "Química",
+      "História",
+      "Geografia",
+      "Filosofia",
+      "Sociologia",
+      "Inglês",
+      "Arte",
+      "Educação Física",
+    ],
+  },
+  {
+    id: "3m",
+    label: "3º ano do Médio",
+    short: "3º Médio",
+    subjects: [
+      "Português",
+      "Matemática",
+      "Biologia",
+      "Física",
+      "Química",
+      "História",
+      "Geografia",
+      "Filosofia",
+      "Sociologia",
+      "Inglês",
+      "Arte",
+      "Educação Física",
+    ],
+  },
+];
+
+/**
+ * Catálogo amplo de matérias para o aluno escolher livremente.
+ * As sugestões por série continuam existindo, mas qualquer matéria do
+ * catálogo (ou uma digitada) pode ser adicionada.
+ */
+const SUBJECT_CATALOG = [
+  {
+    id: "linguagens",
+    label: "Linguagens",
+    subjects: [
+      "Português",
+      "Redação",
+      "Literatura",
+      "Interpretação de Texto",
+      "Inglês",
+      "Espanhol",
+      "Arte",
+      "Música",
+      "Teatro",
+      "Educação Física",
+    ],
+  },
+  {
+    id: "matematica",
+    label: "Matemática",
+    subjects: ["Matemática", "Matemática Financeira", "Raciocínio Lógico"],
+  },
+  {
+    id: "natureza",
+    label: "Ciências da Natureza",
+    subjects: ["Ciências", "Biologia", "Física", "Química"],
+  },
+  {
+    id: "humanas",
+    label: "Ciências Humanas",
+    subjects: [
+      "História",
+      "Geografia",
+      "Filosofia",
+      "Sociologia",
+      "História da Arte",
+      "Atualidades",
+    ],
+  },
+  {
+    id: "outras",
+    label: "Outras",
+    subjects: [
+      "Ensino Religioso",
+      "Tecnologia",
+      "Informática",
+      "Programação",
+      "Projeto de Vida",
+      "Empreendedorismo",
+      "Robótica",
+    ],
+  },
+];
+
+function allCatalogSubjects() {
+  return SUBJECT_CATALOG.flatMap((group) => group.subjects);
+}
+
+function isCatalogSubject(name) {
+  const normalized = String(name ?? "").toLocaleLowerCase("pt-BR");
+  return allCatalogSubjects().some(
+    (subject) => subject.toLocaleLowerCase("pt-BR") === normalized,
+  );
+}
+
+const DEFAULT_PASSING_GRADE = 6;
+
+/* ------------------------------------------------------------------ */
+/* Identificadores e fábricas                                          */
+/* ------------------------------------------------------------------ */
+
+function uid(prefix = "id") {
+  const random =
+    globalThis.crypto && typeof globalThis.crypto.randomUUID === "function"
+      ? globalThis.crypto.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  return `${prefix}_${random}`;
+}
+
+function getStructure(key) {
+  return STRUCTURES[key] ?? STRUCTURES.bimestres;
+}
+
+function getGradeLevel(id) {
+  return GRADE_LEVELS.find((level) => level.id === id) ?? GRADE_LEVELS[0];
+}
+
+function defaultSubjects(gradeLevelId) {
+  return [...getGradeLevel(gradeLevelId).subjects];
+}
+
+function cleanName(value, fallback) {
+  const name = typeof value === "string" ? value.trim().replace(/\s+/g, " ") : "";
+  return name || fallback;
+}
+
+function createAssessment(name = "Prova 1") {
+  return { id: uid("ava"), name: cleanName(name, "Avaliação"), weight: 1, grade: null };
+}
+
+function createPeriod(name) {
+  return {
+    id: uid("per"),
+    name: cleanName(name, "Período"),
+    weight: 1,
+    assessments: [createAssessment("Prova 1"), createAssessment("Prova 2")],
+  };
+}
+
+function createSubject(name, structureKey = "bimestres") {
+  const structure = getStructure(structureKey);
+  return {
+    id: uid("mat"),
+    name: cleanName(name, "Nova matéria"),
+    periods: structure.names.map((periodName) => createPeriod(periodName)),
+  };
+}
+
+/**
+ * Cria os dados iniciais a partir do onboarding.
+ * draft = { studentName, gradeLevelId, structure, passingGrade, subjects: string[] }
+ */
+function createData(draft = {}) {
+  const structure = STRUCTURES[draft.structure] ? draft.structure : "bimestres";
+  const names = Array.isArray(draft.subjects)
+    ? draft.subjects.map((name) => cleanName(name, "")).filter(Boolean)
+    : [];
+
+  const unique = [];
+  const seen = new Set();
+  for (const name of names) {
+    const key = name.toLocaleLowerCase("pt-BR");
+    if (seen.has(key)) continue;
+    seen.add(key);
+    unique.push(name);
+  }
+
+  const subjectNames = unique.length ? unique : defaultSubjects(draft.gradeLevelId);
+  const now = new Date().toISOString();
+  const passingGrade = toNumber(draft.passingGrade);
+
+  return {
+    version: DATA_VERSION,
+    onboardingComplete: true,
+    studentName: cleanName(draft.studentName, ""),
+    gradeLevelId: getGradeLevel(draft.gradeLevelId).id,
+    structure,
+    passingGrade:
+      passingGrade === null ? DEFAULT_PASSING_GRADE : Math.min(10, Math.max(0, passingGrade)),
+    subjects: subjectNames.map((name) => createSubject(name, structure)),
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Alterações estruturais                                              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Troca a estrutura de períodos preservando as notas por posição.
+ * Ao reduzir a quantidade de períodos, os excedentes são descartados.
+ */
+function applyStructure(data, structureKey) {
+  const structure = getStructure(structureKey);
+  const subjects = (data.subjects ?? []).map((subject) => ({
+    ...subject,
+    periods: structure.names.map((name, index) => {
+      const existing = subject.periods?.[index];
+      if (existing) return { ...existing, name };
+      return createPeriod(name);
+    }),
+  }));
+
+  return { ...data, structure: structure.id, subjects };
+}
+
+function findSubject(data, subjectId) {
+  return (data?.subjects ?? []).find((subject) => subject.id === subjectId) ?? null;
+}
+
+/* ------------------------------------------------------------------ */
+/* Normalização e validação (localStorage + importação)                */
+/* ------------------------------------------------------------------ */
+
+function normalizeId(value, prefix, usedIds) {
+  let id = typeof value === "string" && value.trim() ? value.trim() : uid(prefix);
+  while (usedIds.has(id)) id = uid(prefix);
+  usedIds.add(id);
+  return id;
+}
+
+function normalizeAssessment(raw, usedIds) {
+  const assessment = raw && typeof raw === "object" ? raw : {};
+  const weight = safeWeight(assessment.weight);
+  return {
+    id: normalizeId(assessment.id, "ava", usedIds),
+    name: cleanName(assessment.name, "Avaliação"),
+    weight: weight > 0 ? Math.min(99, weight) : 1,
+    grade: clampGrade(assessment.grade),
+  };
+}
+
+function normalizePeriod(raw, usedIds, fallbackName) {
+  const period = raw && typeof raw === "object" ? raw : {};
+  const rawAssessments = Array.isArray(period.assessments) ? period.assessments.slice(0, 50) : [];
+  const assessments = rawAssessments.map((assessment) => normalizeAssessment(assessment, usedIds));
+  const weight = safeWeight(period.weight);
+
+  return {
+    id: normalizeId(period.id, "per", usedIds),
+    name: cleanName(period.name, fallbackName),
+    weight: weight > 0 ? Math.min(99, weight) : 1,
+    assessments: assessments.length ? assessments : [createAssessment("Prova 1")],
+  };
+}
+
+/**
+ * Valida e completa dados vindos do localStorage ou de um backup.
+ * Lança um Error com mensagem amigável quando o formato é inválido.
+ */
+function normalizeData(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    throw new Error("Os dados não estão em um formato reconhecido.");
+  }
+
+  // Aceita tanto o backup completo ({ data: {...} }) quanto os dados diretos.
+  const source = raw.data && typeof raw.data === "object" && !Array.isArray(raw.data) ? raw.data : raw;
+
+  if (!Array.isArray(source.subjects)) {
+    throw new Error("O arquivo não contém uma lista de matérias.");
+  }
+  if (source.subjects.length === 0) {
+    throw new Error("O arquivo não contém nenhuma matéria.");
+  }
+  if (source.subjects.length > 60) {
+    throw new Error("O arquivo tem matérias demais para ser um backup do App CEPK.");
+  }
+
+  const structureKey = STRUCTURES[source.structure] ? source.structure : "bimestres";
+  const structure = getStructure(structureKey);
+  const usedIds = new Set();
+  const passingGrade = toNumber(source.passingGrade);
+
+  const subjects = source.subjects.map((rawSubject, subjectIndex) => {
+    const subject = rawSubject && typeof rawSubject === "object" ? rawSubject : {};
+    const rawPeriods = Array.isArray(subject.periods) ? subject.periods.slice(0, 12) : [];
+    const periods = rawPeriods.map((period, periodIndex) =>
+      normalizePeriod(period, usedIds, structure.names[periodIndex] ?? `Período ${periodIndex + 1}`),
+    );
+
+    return {
+      id: normalizeId(subject.id, "mat", usedIds),
+      name: cleanName(subject.name, `Matéria ${subjectIndex + 1}`),
+      periods: periods.length
+        ? periods
+        : structure.names.map((name) => normalizePeriod({}, usedIds, name)),
+    };
+  });
+
+  const now = new Date().toISOString();
+
+  return {
+    version: DATA_VERSION,
+    onboardingComplete: source.onboardingComplete !== false,
+    studentName: cleanName(source.studentName, "").slice(0, 60),
+    gradeLevelId: getGradeLevel(source.gradeLevelId).id,
+    structure: structureKey,
+    passingGrade:
+      passingGrade === null ? DEFAULT_PASSING_GRADE : Math.min(10, Math.max(0, passingGrade)),
+    subjects,
+    createdAt: typeof source.createdAt === "string" ? source.createdAt : now,
+    updatedAt: now,
+  };
+}
+
+function buildBackup(data) {
+  return {
+    app: "App CEPK",
+    version: DATA_VERSION,
+    exportedAt: new Date().toISOString(),
+    data,
+  };
+}
+
+function parseBackup(text) {
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error("O arquivo selecionado não é um JSON válido.");
+  }
+  return normalizeData(parsed);
+}
+
+/* ------------------------------------------------------------------ */
+/* localStorage                                                        */
+/* ------------------------------------------------------------------ */
+
+function storageAvailable() {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) return false;
+    const key = "__cepk_test__";
+    window.localStorage.setItem(key, "1");
+    window.localStorage.removeItem(key);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function loadData(key = STORAGE_KEY) {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) return null;
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return null;
+    const data = normalizeData(JSON.parse(raw));
+    return data.onboardingComplete ? data : null;
+  } catch (error) {
+    console.warn("App CEPK: não foi possível carregar os dados salvos.", error);
+    return null;
+  }
+}
+
+function saveData(data, key = STORAGE_KEY) {
+  if (typeof window === "undefined" || !window.localStorage) {
+    throw new Error("Este navegador não permite salvar dados localmente.");
+  }
+  window.localStorage.setItem(key, JSON.stringify(data));
+}
+
+function clearData(key = STORAGE_KEY) {
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      window.localStorage.removeItem(key);
+    }
+  } catch {
+    // Ignora: se não dá para limpar, também não havia o que limpar.
+  }
+}
+
+/* src/auth.js */
+// Contas locais do App CEPK.
+//
+// Não existe servidor: a conta serve para separar os dados de cada aluno
+// neste dispositivo e evitar que qualquer pessoa abra o painel por engano.
+// A senha nunca é salva em texto puro — apenas um hash PBKDF2-SHA256 com sal
+// aleatório. Nada é enviado para a internet.
+
+
+
+const ACCOUNTS_KEY = "app-cepk:accounts:v1";
+const SESSION_KEY = "app-cepk:session:v1";
+const PBKDF2_ITERATIONS = 120_000;
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 128;
+
+/* ------------------------------------------------------------------ */
+/* Validação                                                           */
+/* ------------------------------------------------------------------ */
+
+function normalizeEmail(value) {
+  return String(value ?? "").trim().toLocaleLowerCase("pt-BR");
+}
+
+function isValidEmail(value) {
+  const email = normalizeEmail(value);
+  if (email.length < 5 || email.length > 120) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+/** Retorna "" quando a senha é válida ou uma mensagem de erro. */
+function validatePassword(value) {
+  const password = String(value ?? "");
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return `Use pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`;
+  }
+  if (password.length > MAX_PASSWORD_LENGTH) {
+    return `Use no máximo ${MAX_PASSWORD_LENGTH} caracteres.`;
+  }
+  return "";
+}
+
+/** O hash forte depende de Web Crypto (HTTPS ou localhost). */
+function authAvailable() {
+  return Boolean(globalThis.crypto && globalThis.crypto.subtle);
+}
+
+/* ------------------------------------------------------------------ */
+/* Hash de senha                                                       */
+/* ------------------------------------------------------------------ */
+
+function bytesToHex(bytes) {
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function hexToBytes(hex) {
+  const clean = String(hex ?? "");
+  if (clean.length % 2 !== 0) return new Uint8Array();
+  const bytes = new Uint8Array(clean.length / 2);
+  for (let index = 0; index < bytes.length; index += 1) {
+    bytes[index] = Number.parseInt(clean.slice(index * 2, index * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+function makeSalt() {
+  const bytes = new Uint8Array(16);
+  globalThis.crypto.getRandomValues(bytes);
+  return bytesToHex(bytes);
+}
+
+/** Deriva o hash da senha. Usado tanto no cadastro quanto no login. */
+async function hashPassword(password, salt, iterations = PBKDF2_ITERATIONS) {
+  if (!authAvailable()) {
+    throw new Error(
+      "Este navegador não permite criar conta com segurança nesta conexão. Abra o app por HTTPS ou localhost.",
+    );
+  }
+  const material = await globalThis.crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(String(password ?? "")),
+    "PBKDF2",
+    false,
+    ["deriveBits"],
+  );
+  const bits = await globalThis.crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: hexToBytes(salt),
+      iterations: Math.max(10_000, Number(iterations) || PBKDF2_ITERATIONS),
+      hash: "SHA-256",
+    },
+    material,
+    256,
+  );
+  return bytesToHex(new Uint8Array(bits));
+}
+
+function safeEqual(a, b) {
+  const left = String(a ?? "");
+  const right = String(b ?? "");
+  if (left.length !== right.length) return false;
+  let diff = 0;
+  for (let index = 0; index < left.length; index += 1) {
+    diff |= left.charCodeAt(index) ^ right.charCodeAt(index);
+  }
+  return diff === 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Armazenamento das contas                                            */
+/* ------------------------------------------------------------------ */
+
+function storage() {
+  try {
+    if (typeof window === "undefined" || !window.localStorage) return null;
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeRecord(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const email = normalizeEmail(raw.email);
+  const salt = typeof raw.salt === "string" ? raw.salt : "";
+  const hash = typeof raw.hash === "string" ? raw.hash : "";
+  if (!isValidEmail(email) || salt.length < 16 || hash.length < 32) return null;
+  return {
+    id: typeof raw.id === "string" && raw.id ? raw.id : uid("usr"),
+    email,
+    salt,
+    hash,
+    iterations: Number.isFinite(raw.iterations) ? raw.iterations : PBKDF2_ITERATIONS,
+    createdAt: typeof raw.createdAt === "string" ? raw.createdAt : new Date().toISOString(),
+  };
+}
+
+function loadAccounts() {
+  const store = storage();
+  if (!store) return [];
+  try {
+    const raw = store.getItem(ACCOUNTS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map(normalizeRecord).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function saveAccounts(accounts) {
+  const store = storage();
+  if (!store) throw new Error("Este navegador não permite salvar contas localmente.");
+  store.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+}
+
+function findAccountByEmail(email) {
+  const normalized = normalizeEmail(email);
+  return loadAccounts().find((account) => account.email === normalized) ?? null;
+}
+
+function findAccountById(id) {
+  if (!id) return null;
+  return loadAccounts().find((account) => account.id === id) ?? null;
+}
+
+function hasAccounts() {
+  return loadAccounts().length > 0;
+}
+
+/**
+ * Cria uma conta local. Lança Error com mensagem amigável em caso de problema.
+ * Retorna { account, firstAccount }.
+ */
+async function createAccount({ email, password }) {
+  const normalized = normalizeEmail(email);
+  if (!isValidEmail(normalized)) {
+    throw new Error("Digite um e-mail válido, como nome@escola.com.");
+  }
+  const passwordError = validatePassword(password);
+  if (passwordError) throw new Error(passwordError);
+
+  const accounts = loadAccounts();
+  if (accounts.some((account) => account.email === normalized)) {
+    throw new Error("Já existe uma conta com esse e-mail neste dispositivo. Tente entrar.");
+  }
+
+  const salt = makeSalt();
+  const hash = await hashPassword(password, salt);
+  const account = {
+    id: uid("usr"),
+    email: normalized,
+    salt,
+    hash,
+    iterations: PBKDF2_ITERATIONS,
+    createdAt: new Date().toISOString(),
+  };
+  const firstAccount = accounts.length === 0;
+  accounts.push(account);
+  saveAccounts(accounts);
+  return { account, firstAccount };
+}
+
+/** Confere e-mail e senha. Lança Error genérico para não revelar qual falhou. */
+async function authenticate({ email, password }) {
+  const normalized = normalizeEmail(email);
+  if (!isValidEmail(normalized)) {
+    throw new Error("Digite um e-mail válido, como nome@escola.com.");
+  }
+  if (!String(password ?? "")) {
+    throw new Error("Digite sua senha.");
+  }
+
+  const account = findAccountByEmail(normalized);
+  if (!account) throw new Error("E-mail ou senha incorretos.");
+
+  const hash = await hashPassword(password, account.salt, account.iterations);
+  if (!safeEqual(hash, account.hash)) throw new Error("E-mail ou senha incorretos.");
+  return account;
+}
+
+/* ------------------------------------------------------------------ */
+/* Sessão                                                              */
+/* ------------------------------------------------------------------ */
+
+function loadSession() {
+  const store = storage();
+  if (!store) return null;
+  try {
+    const id = store.getItem(SESSION_KEY);
+    if (!id) return null;
+    return findAccountById(id) ? id : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveSession(accountId) {
+  const store = storage();
+  if (!store) return;
+  try {
+    store.setItem(SESSION_KEY, String(accountId));
+  } catch {
+    // Sem sessão persistente: o login continua válido só nesta aba.
+  }
+}
+
+function clearSession() {
+  const store = storage();
+  if (!store) return;
+  try {
+    store.removeItem(SESSION_KEY);
+  } catch {
+    // Ignora.
+  }
+}
+
+/* src/main.js */
+// App CEPK — interface, onboarding, lançamento de notas, simulador e backup.
+// Sem frameworks e sem build: apenas módulos ES nativos.
+
+
+
+
+
+/* ------------------------------------------------------------------ */
+/* Ícones                                                              */
+/* ------------------------------------------------------------------ */
+
+const ICONS = {
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
+  list: '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
+  calculator:
+    '<rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
+  settings:
+    '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1.1 1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/>',
+  download: '<path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  arrow: '<path d="M5 12h14m0 0-6-6m6 6-6 6"/>',
+  check: '<path d="m4 12.5 5 5L20 6.5"/>',
+  alert: '<path d="M12 9v4m0 4h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>',
+  chevron: '<path d="m6 9 6 6 6-6"/>',
+  trash: '<path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  lock: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/>',
+  eye: '<path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+  eyeOff:
+    '<path d="M3 3l18 18"/><path d="M10.6 6.1A10.9 10.9 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.4 4M6.2 6.6C3.4 8.6 2 12 2 12s3.5 6 10 6a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+  logout: '<path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+  key: '<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8m-3 3 3 3"/>',
+};
+
+function icon(name, className = "icon") {
+  return `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[name] ?? ""}</svg>`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Elementos e estado                                                  */
+/* ------------------------------------------------------------------ */
+
+const els = {
+  auth: document.getElementById("auth"),
+  onboarding: document.getElementById("onboarding"),
+  workspace: document.getElementById("workspace"),
+  view: document.getElementById("view"),
+  topnav: document.getElementById("topnav"),
+  tabbar: document.getElementById("tabbar"),
+  studentChip: document.getElementById("student-chip"),
+  toasts: document.getElementById("toasts"),
+  dialog: document.getElementById("dialog"),
+};
+
+const NAV = [
+  { route: "inicio", label: "Início", icon: "home" },
+  { route: "notas", label: "Notas", icon: "list" },
+  { route: "simulador", label: "Simular", icon: "calculator" },
+  { route: "ajustes", label: "Ajustes", icon: "settings" },
+];
+
+const STATUS_META = {
+  safe: { label: "Na meta", tone: "safe" },
+  attention: { label: "Atenção", tone: "attention" },
+  risk: { label: "Risco", tone: "risk" },
+  critical: { label: "Fora de alcance", tone: "critical" },
+  empty: { label: "Sem notas", tone: "empty" },
+};
+
+const state = {
+  account: null,
+  auth: { mode: "login", email: "", error: "", busy: false },
+  data: null,
+  route: "inicio",
+  onboarding: null,
+  onboardingStep: 0,
+  onboardingError: "",
+  openSubjects: new Set(),
+  notesSearch: "",
+  sim: { subjectId: null, mode: "single", assessmentId: null, grade: 7 },
+  storageOk: true,
+  saveErrorShown: false,
+  pendingScrollSubject: null,
+};
+
+let saveTimer = null;
+
+/** Chave do localStorage da conta logada. */
+function currentDataKey() {
+  return dataKeyFor(state.account?.id);
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilidades                                                          */
+/* ------------------------------------------------------------------ */
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => {
+    switch (char) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      default:
+        return "&#39;";
+    }
+  });
+}
+
+function normalizeText(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR")
+    .trim();
+}
+
+function sameName(a, b) {
+  return normalizeText(a) === normalizeText(b);
+}
+
+function firstName(name) {
+  return String(name ?? "").trim().split(/\s+/)[0] || "";
+}
+
+function greeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Bom dia";
+  if (hour < 18) return "Boa tarde";
+  return "Boa noite";
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function weightFromInput(value) {
+  const number = toNumber(value);
+  if (number === null) return 1;
+  return clamp(Math.round(number * 100) / 100, 0.1, 99);
+}
+
+function statusPill(status) {
+  const meta = STATUS_META[status] ?? STATUS_META.empty;
+  return `<span class="pill pill--${meta.tone}">${meta.label}</span>`;
+}
+
+function neededText(stats) {
+  if (stats.average === null) return "Sem notas lançadas";
+  const needed = stats.needed;
+  if (needed.status === "empty") return "Sem notas lançadas";
+  if (needed.status === "guaranteed") return "Meta garantida";
+  if (needed.status === "impossible") {
+    return stats.complete ? "Média final abaixo da meta" : "Fora de alcance no ano";
+  }
+  return `Precisa de ${formatGrade(needed.required)} no restante`;
+}
+
+function neededShort(stats) {
+  if (stats.average === null) return "sem notas";
+  const needed = stats.needed;
+  if (needed.status === "empty") return "sem notas";
+  if (needed.status === "guaranteed") return "meta garantida";
+  if (needed.status === "impossible") return "fora de alcance";
+  return `faltam ${formatGrade(needed.required)}`;
+}
+
+function periodNeededText(period, target) {
+  if (!period.activeCount) return "Adicione pelo menos uma avaliação.";
+  if (period.complete) {
+    return period.average !== null && period.average + 1e-9 >= target
+      ? "Período fechado acima da meta."
+      : "Período fechado abaixo da meta.";
+  }
+  if (!period.gradedCount) return "Sem notas neste período ainda.";
+  if (period.needed.status === "guaranteed") return "Meta do período garantida.";
+  if (period.needed.status === "impossible") return "Meta do período fora de alcance.";
+  const count = period.remainingCount;
+  return `Precisa de ${formatGrade(period.needed.required)} ${
+    count === 1 ? "na avaliação restante" : `nas ${count} avaliações restantes`
+  }.`;
+}
+
+function periodTone(period, target) {
+  if (period.average === null) return "empty";
+  if (period.complete) return period.average + 1e-9 >= target ? "safe" : "critical";
+  return period.average + 1e-9 >= target ? "safe" : "attention";
+}
+
+function subjectFlags(stats) {
+  const flags = [];
+  if (stats.hasAccumulated) {
+    flags.push(
+      `<span class="flag flag--warn" title="Período fechado abaixo da meta · déficit de ${formatGrade(
+        stats.accumulatedDeficit,
+      )} pontos">Acumulada</span>`,
+    );
+  }
+  if (stats.complete) flags.push('<span class="flag">Completa</span>');
+  return flags.join("");
+}
+
+function findSubjectCard(subjectId) {
+  return [...els.view.querySelectorAll("[data-subject-card]")].find(
+    (card) => card.dataset.subjectCard === subjectId,
+  ) ?? null;
+}
+
+function setText(element, text) {
+  if (element) element.textContent = text;
+}
+
+function showToast(message, tone = "info") {
+  const toast = document.createElement("div");
+  toast.className = `toast toast--${tone}`;
+  toast.innerHTML = `<span class="toast__dot" aria-hidden="true"></span><span>${esc(message)}</span>`;
+  els.toasts.append(toast);
+  window.setTimeout(() => {
+    toast.classList.add("is-leaving");
+    window.setTimeout(() => toast.remove(), 220);
+  }, 3800);
+}
+
+/* ------------------------------------------------------------------ */
+/* Persistência                                                        */
+/* ------------------------------------------------------------------ */
+
+function commit({ rerender = false, toast = "" } = {}) {
+  if (!state.data) return;
+  state.data.updatedAt = new Date().toISOString();
+  try {
+    saveData(state.data, currentDataKey());
+    state.storageOk = true;
+  } catch (error) {
+    state.storageOk = false;
+    if (!state.saveErrorShown) {
+      state.saveErrorShown = true;
+      showToast("Não foi possível salvar no navegador. Exporte um backup.", "error");
+    }
+    console.warn("App CEPK: falha ao salvar.", error);
+  }
+  if (toast) showToast(toast, "success");
+  if (rerender) renderApp();
+}
+
+function scheduleSave() {
+  window.clearTimeout(saveTimer);
+  saveTimer = window.setTimeout(() => {
+    saveTimer = null;
+    commit();
+  }, 250);
+}
+
+function flushSave() {
+  if (saveTimer) {
+    window.clearTimeout(saveTimer);
+    saveTimer = null;
+    commit();
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Diálogo e backup                                                    */
+/* ------------------------------------------------------------------ */
+
+function confirmDialog({ title, message, confirmLabel = "Confirmar", danger = false }) {
+  return new Promise((resolve) => {
+    const dialog = els.dialog;
+    if (!dialog) {
+      resolve(window.confirm(`${title}\n\n${message}`));
+      return;
+    }
+    dialog.querySelector(".dialog__title").textContent = title;
+    dialog.querySelector(".dialog__message").textContent = message;
+    const confirmButton = dialog.querySelector(".dialog__confirm");
+    confirmButton.textContent = confirmLabel;
+    confirmButton.classList.toggle("btn--danger", danger);
+    confirmButton.classList.toggle("btn--primary", !danger);
+    dialog.returnValue = "";
+    dialog.onclose = () => {
+      dialog.onclose = null;
+      resolve(dialog.returnValue === "confirm");
+    };
+    if (!dialog.open) dialog.showModal();
+  });
+}
+
+function exportBackup() {
+  if (!state.data) return;
+  flushSave();
+  const backup = buildBackup(state.data);
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  const today = new Date().toISOString().slice(0, 10);
+  anchor.href = url;
+  anchor.download = `app-cepk-backup-${today}.json`;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+  showToast("Backup exportado. Guarde o arquivo em um lugar seguro.", "success");
+}
+
+async function importFile(file) {
+  try {
+    const text = await file.text();
+    const imported = parseBackup(text);
+    const ok = await confirmDialog({
+      title: "Importar este backup?",
+      message:
+        "Os dados atuais serão substituídos pelas matérias e notas do arquivo. Exporte um backup antes se quiser manter o que está aqui.",
+      confirmLabel: "Importar e substituir",
+      danger: true,
+    });
+    if (!ok) return;
+
+    state.data = { ...imported, onboardingComplete: true };
+    state.openSubjects.clear();
+    state.sim = {
+      subjectId: imported.subjects[0]?.id ?? null,
+      mode: "single",
+      assessmentId: null,
+      grade: 7,
+    };
+    state.notesSearch = "";
+    commit();
+    navigate("inicio");
+    showToast("Backup importado com sucesso.", "success");
+  } catch (error) {
+    showToast(error instanceof Error ? error.message : "Não foi possível importar o arquivo.", "error");
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Navegação                                                           */
+/* ------------------------------------------------------------------ */
+
+function parseRoute() {
+  const hash = window.location.hash.replace(/^#\/?/, "").split("?")[0];
+  return NAV.some((item) => item.route === hash) ? hash : "inicio";
+}
+
+function navigate(route) {
+  const target = `#/${route}`;
+  if (window.location.hash === target) {
+    state.route = route;
+    renderApp();
+  } else {
+    window.location.hash = target;
+  }
+}
+
+function renderNav() {
+  els.topnav.innerHTML = NAV.map(
+    (item) =>
+      `<a class="topnav__link" href="#/${item.route}" data-nav="${item.route}">${icon(item.icon)}<span>${item.label}</span></a>`,
+  ).join("");
+  els.tabbar.innerHTML = NAV.map(
+    (item) =>
+      `<a class="tablink" href="#/${item.route}" data-nav="${item.route}">${icon(item.icon)}<span>${item.label}</span></a>`,
+  ).join("");
+}
+
+function updateNav() {
+  document.querySelectorAll("[data-nav]").forEach((link) => {
+    const active = link.dataset.nav === state.route;
+    link.classList.toggle("is-active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+}
+
+function updateTopbar() {
+  if (!state.data) return;
+  const name = firstName(state.data.studentName);
+  const level = getGradeLevel(state.data.gradeLevelId);
+  els.studentChip.innerHTML = `${icon("user")}<span>${esc(name || "Seu painel")}</span><small>${esc(level.short)}</small>`;
+  els.studentChip.title = state.account ? `Conta: ${state.account.email}` : "";
+}
+
+/* ------------------------------------------------------------------ */
+/* Conta local (entrar / criar)                                        */
+/* ------------------------------------------------------------------ */
+
+function showAuthError(message) {
+  state.auth.error = message;
+  const box = els.auth.querySelector('[data-role="auth-error"]');
+  if (!box) return;
+  box.textContent = message;
+  box.hidden = !message;
+}
+
+function setAuthBusy(busy) {
+  state.auth.busy = busy;
+  const button = els.auth.querySelector('[data-role="auth-submit"]');
+  if (!button) return;
+  const isSignup = state.auth.mode === "signup";
+  button.disabled = busy;
+  button.classList.toggle("is-busy", busy);
+  const label = button.querySelector("[data-role=\"auth-submit-label\"]");
+  if (label) {
+    label.textContent = busy ? (isSignup ? "Criando conta…" : "Entrando…") : isSignup ? "Criar conta" : "Entrar";
+  }
+}
+
+function renderAuth() {
+  const mode = state.auth.mode;
+  const isSignup = mode === "signup";
+  const cryptoOk = authAvailable();
+
+  els.auth.hidden = false;
+  els.onboarding.hidden = true;
+  els.workspace.hidden = true;
+  document.body.classList.add("is-auth");
+  document.body.classList.remove("is-app", "is-onboarding");
+
+  els.auth.innerHTML = `
+    <div class="auth__inner">
+      <section class="auth__intro">
+        <span class="brand brand--lg">
+          <span class="brand__mark" aria-hidden="true">C</span>
+          <span class="brand__text">App <strong>CEPK</strong></span>
+        </span>
+        <p class="auth__kicker">Seu ano, sem surpresas</p>
+        <h1>Descubra hoje o que você precisa para <strong>passar de ano</strong>.</h1>
+        <p class="auth__sub">Entre para registrar suas notas, ver a média de cada matéria e simular quanto precisa tirar nas próximas provas.</p>
+        <ul class="auth__benefits">
+          <li>${icon("check")} Média e nota necessária automáticas</li>
+          <li>${icon("alert")} Alertas de matérias em risco</li>
+          <li>${icon("calculator")} Simulador “e se eu tirar X?”</li>
+        </ul>
+        <p class="auth__privacy">${icon("lock")} Conta local: nada é enviado para a internet.</p>
+      </section>
+
+      <section class="auth__card" aria-labelledby="auth-title">
+        <div class="auth__tabs" role="tablist" aria-label="Entrar ou criar conta">
+          <button type="button" role="tab" aria-selected="${!isSignup}" class="${
+            !isSignup ? "is-active" : ""
+          }" data-action="auth-mode" data-mode="login">Entrar</button>
+          <button type="button" role="tab" aria-selected="${isSignup}" class="${
+            isSignup ? "is-active" : ""
+          }" data-action="auth-mode" data-mode="signup">Criar conta</button>
+        </div>
+
+        <h2 id="auth-title">${isSignup ? "Crie sua conta" : "Bem-vindo de volta"}</h2>
+        <p class="auth__hint">${
+          isSignup
+            ? "Leva menos de 1 minuto. Depois você escolhe a série e as matérias."
+            : "Use o e-mail e a senha que você cadastrou neste dispositivo."
+        }</p>
+
+        ${
+          cryptoOk
+            ? ""
+            : `<p class="banner banner--warn auth__banner">${icon(
+                "alert",
+              )}<span>Para proteger sua senha, abra o app por <strong>HTTPS</strong> ou <strong>localhost</strong>. Nesta conexão o navegador não libera o cadastro seguro.</span></p>`
+        }
+
+        <form data-form="auth" novalidate>
+          <label class="field">
+            <span>E-mail</span>
+            <span class="input-icon">
+              ${icon("mail")}
+              <input type="email" name="email" inputmode="email" autocomplete="email" maxlength="120"
+                placeholder="voce@escola.com" value="${esc(state.auth.email)}" aria-label="E-mail" required>
+            </span>
+          </label>
+
+          <label class="field">
+            <span>Senha</span>
+            <span class="input-icon input-icon--password">
+              ${icon("key")}
+              <input type="password" name="password" autocomplete="${
+                isSignup ? "new-password" : "current-password"
+              }" maxlength="128" placeholder="Mínimo de 6 caracteres" aria-label="Senha" required>
+              <button type="button" class="password-toggle" data-action="toggle-password" aria-label="Mostrar senha" title="Mostrar senha">
+                ${icon("eye")}
+              </button>
+            </span>
+          </label>
+
+          ${
+            isSignup
+              ? `<label class="field">
+                  <span>Confirmar senha</span>
+                  <span class="input-icon">
+                    ${icon("lock")}
+                    <input type="password" name="confirm" autocomplete="new-password" maxlength="128"
+                      placeholder="Digite a senha novamente" aria-label="Confirmar senha" required>
+                  </span>
+                </label>`
+              : ""
+          }
+
+          <p class="form-error auth__error" data-role="auth-error" role="alert" ${
+            state.auth.error ? "" : "hidden"
+          }>${esc(state.auth.error)}</p>
+
+          <button type="submit" class="btn btn--primary auth__submit" data-role="auth-submit" ${
+            state.auth.busy ? "disabled" : ""
+          }>
+            <span data-role="auth-submit-label">${isSignup ? "Criar conta" : "Entrar"}</span>
+            ${icon("arrow")}
+          </button>
+        </form>
+
+        <p class="auth__switch">
+          ${isSignup ? "Já tem conta neste dispositivo?" : "Ainda não tem conta?"}
+          <button type="button" class="link-btn" data-action="auth-mode" data-mode="${
+            isSignup ? "login" : "signup"
+          }">${isSignup ? "Entrar" : "Criar agora"}</button>
+        </p>
+
+        <p class="auth__note">${icon("lock")} A senha é guardada como hash e nunca sai deste navegador. Se esquecer, será preciso limpar os dados do site.</p>
+      </section>
+    </div>`;
+}
+
+function startOnboarding({ isNew = false } = {}) {
+  state.data = null;
+  state.onboarding = createOnboardingDraft();
+  state.onboardingStep = 0;
+  state.onboardingError = "";
+  els.auth.hidden = true;
+  document.body.classList.remove("is-auth");
+  renderOnboarding();
+  if (isNew) showToast("Conta criada! Vamos configurar seu ano.", "success");
+}
+
+async function enterAccount(account, { firstAccount = false, isNew = false } = {}) {
+  state.account = account;
+  saveSession(account.id);
+
+  let stored = loadData(currentDataKey());
+
+  // Quem já usava o app antes do login pode levar o painel antigo para a conta.
+  if (!stored && firstAccount) {
+    const legacy = loadData();
+    if (legacy) {
+      const adopt = await confirmDialog({
+        title: "Aproveitar os dados deste dispositivo?",
+        message:
+          "Encontramos um painel salvo antes da conta existir. Quer vincular as matérias e notas a este e-mail?",
+        confirmLabel: "Vincular dados",
+      });
+      if (adopt) {
+        try {
+          saveData(legacy, currentDataKey());
+          clearData();
+          stored = legacy;
+          showToast("Seus dados anteriores foram vinculados à conta.", "success");
+        } catch {
+          showToast("Não foi possível vincular os dados antigos. Exporte um backup antes.", "error");
+        }
+      }
+    }
+  }
+
+  if (stored) {
+    state.data = stored;
+    state.sim.subjectId = stored.subjects[0]?.id ?? null;
+    state.sim.assessmentId = null;
+    if (state.route === "notas" && stored.subjects[0]) {
+      state.openSubjects.add(stored.subjects[0].id);
+    }
+    els.auth.hidden = true;
+    document.body.classList.remove("is-auth");
+    renderApp();
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  startOnboarding({ isNew });
+}
+
+async function handleAuthSubmit(form) {
+  if (state.auth.busy) return;
+  const mode = state.auth.mode;
+  const isSignup = mode === "signup";
+  const emailInput = form.querySelector('[name="email"]');
+  const passwordInput = form.querySelector('[name="password"]');
+  const confirmInput = form.querySelector('[name="confirm"]');
+  const email = normalizeEmail(emailInput?.value);
+  const password = passwordInput?.value ?? "";
+
+  state.auth.email = email;
+  showAuthError("");
+
+  if (!isValidEmail(email)) {
+    showAuthError("Digite um e-mail válido, como nome@escola.com.");
+    emailInput?.focus();
+    return;
+  }
+
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    showAuthError(passwordError);
+    passwordInput?.focus();
+    return;
+  }
+
+  if (isSignup && password !== (confirmInput?.value ?? "")) {
+    showAuthError("As senhas não conferem.");
+    confirmInput?.focus();
+    return;
+  }
+
+  if (!authAvailable()) {
+    showAuthError(
+      "Este navegador não libera o cadastro seguro nesta conexão. Abra o app por HTTPS ou localhost.",
+    );
+    return;
+  }
+
+  setAuthBusy(true);
+  try {
+    if (isSignup) {
+      const { account, firstAccount } = await createAccount({ email, password });
+      await enterAccount(account, { firstAccount, isNew: true });
+    } else {
+      const account = await authenticate({ email, password });
+      await enterAccount(account, { isNew: false });
+    }
+  } catch (error) {
+    showAuthError(error instanceof Error ? error.message : "Não foi possível entrar. Tente de novo.");
+  } finally {
+    if (state.auth) setAuthBusy(false);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Onboarding                                                          */
+/* ------------------------------------------------------------------ */
+
+function createOnboardingDraft() {
+  const level = GRADE_LEVELS[0];
+  return {
+    studentName: "",
+    gradeLevelId: level.id,
+    structure: "bimestres",
+    passingGrade: DEFAULT_PASSING_GRADE,
+    subjects: [...level.subjects],
+  };
+}
+
+function onboardingExtraSubjects() {
+  const catalog = allCatalogSubjects();
+  return state.onboarding.subjects.filter(
+    (name) => !catalog.some((item) => sameName(item, name)),
+  );
+}
+
+function onboardingCatalogGroups() {
+  const groups = SUBJECT_CATALOG.map((group) => ({ ...group, subjects: [...group.subjects] }));
+  const extras = onboardingExtraSubjects();
+  if (extras.length) {
+    groups.push({ id: "custom", label: "Suas matérias", subjects: extras });
+  }
+  return groups;
+}
+
+function onboardingOptions() {
+  return [...allCatalogSubjects(), ...onboardingExtraSubjects()];
+}
+
+function onboardingSteps() {
+  const labels = ["Série", "Notas", "Matérias"];
+  return labels
+    .map(
+      (label, index) => `
+      <li class="step ${index < state.onboardingStep ? "is-done" : ""} ${
+        index === state.onboardingStep ? "is-current" : ""
+      }">
+        <span class="step__mark">${index < state.onboardingStep ? icon("check") : index + 1}</span>
+        <small>${label}</small>
+      </li>`,
+    )
+    .join("");
+}
+
+function onboardingContent() {
+  const draft = state.onboarding;
+  const step = state.onboardingStep;
+
+  if (step === 0) {
+    return `
+      <div class="onboarding__step">
+        <p class="eyebrow">Passo 1 · Quem está usando</p>
+        <h2>Primeiro, como podemos te chamar?</h2>
+        <p class="step__sub">O nome é opcional. Ele aparece só no seu painel, neste dispositivo.</p>
+        <label class="field">
+          <span>Seu nome (opcional)</span>
+          <input type="text" maxlength="60" placeholder="Ex.: Ana" value="${esc(
+            draft.studentName,
+          )}" data-onboarding="student-name" autocomplete="given-name">
+        </label>
+        <fieldset class="field-group">
+          <legend>Sua série</legend>
+          <div class="option-grid">
+            ${GRADE_LEVELS.map(
+              (level) => `
+              <label class="option ${draft.gradeLevelId === level.id ? "is-selected" : ""}">
+                <input type="radio" name="grade-level" value="${level.id}" data-onboarding="grade-level" ${
+                  draft.gradeLevelId === level.id ? "checked" : ""
+                }>
+                <span class="option__title">${level.label}</span>
+              </label>`,
+            ).join("")}
+          </div>
+        </fieldset>
+      </div>`;
+  }
+
+  if (step === 1) {
+    const structure = getStructure(draft.structure);
+    return `
+      <div class="onboarding__step">
+        <p class="eyebrow">Passo 2 · Como o ano é dividido</p>
+        <h2>Bimestres, trimestres ou semestres?</h2>
+        <p class="step__sub">Escolha como a sua escola organiza as notas. Você pode mudar depois.</p>
+        <div class="option-grid option-grid--3">
+          ${Object.values(STRUCTURES)
+            .map(
+              (item) => `
+              <label class="option option--stack ${draft.structure === item.id ? "is-selected" : ""}">
+                <input type="radio" name="structure" value="${item.id}" data-onboarding="structure" ${
+                  draft.structure === item.id ? "checked" : ""
+                }>
+                <span class="option__title">${item.label}</span>
+                <span class="option__hint">${item.hint}</span>
+              </label>`,
+            )
+            .join("")}
+        </div>
+        <label class="field field--inline">
+          <span>Nota mínima para passar</span>
+          <span class="field__control">
+            <input type="text" inputmode="decimal" value="${gradeToInput(
+              draft.passingGrade,
+            )}" data-onboarding="passing-grade" aria-label="Nota mínima para passar">
+            <span class="field__suffix">/10</span>
+          </span>
+        </label>
+        <p class="hint">O padrão é 6,0. A meta vale para o ano inteiro.</p>
+        <div class="preview-periods" aria-label="Períodos do ano">
+          ${structure.names
+            .map((name) => `<span class="chip chip--muted">${esc(name)}</span>`)
+            .join("")}
+        </div>
+      </div>`;
+  }
+
+  const groups = onboardingCatalogGroups();
+  return `
+    <div class="onboarding__step">
+      <p class="eyebrow">Passo 3 · Suas matérias</p>
+      <h2>Escolha as matérias que você quer acompanhar</h2>
+      <p class="step__sub">Marque qualquer matéria do catálogo — não precisa ser só as da sua série. Você pode adicionar outras depois.</p>
+      <div class="subject-groups">
+        ${groups
+          .map(
+            (group) => `
+          <fieldset class="subject-group">
+            <legend>${esc(group.label)}</legend>
+            <div class="subject-picker">
+              ${group.subjects
+                .map((name) => {
+                  const checked = draft.subjects.some((subject) => sameName(subject, name));
+                  return `
+                    <label class="check-chip ${checked ? "is-checked" : ""}">
+                      <input type="checkbox" value="${esc(name)}" data-onboarding="subject" ${
+                        checked ? "checked" : ""
+                      }>
+                      <span>${esc(name)}</span>
+                    </label>`;
+                })
+                .join("")}
+            </div>
+          </fieldset>`,
+          )
+          .join("")}
+      </div>
+      <div class="picker-actions">
+        <button type="button" class="link-btn" data-action="select-all-subjects">Selecionar todas</button>
+        <button type="button" class="link-btn" data-action="clear-subjects">Limpar</button>
+        <span class="picker-count" data-role="subject-count">${draft.subjects.length} selecionada(s)</span>
+      </div>
+      <form class="inline-add" data-form="custom-subject">
+        <input id="custom-subject" type="text" maxlength="40" placeholder="Outra matéria (ex.: Redação)" autocomplete="off" aria-label="Nome de outra matéria">
+        <button type="submit" class="btn btn--ghost">${icon("plus")} Adicionar</button>
+      </form>
+      <p class="hint">${icon("lock")} Você pode mudar tudo depois em Ajustes.</p>
+    </div>`;
+}
+
+function renderOnboarding() {
+  const draft = state.onboarding ?? createOnboardingDraft();
+  state.onboarding = draft;
+  const step = state.onboardingStep;
+
+  els.auth.hidden = true;
+  els.workspace.hidden = true;
+  els.onboarding.hidden = false;
+  document.body.classList.add("is-onboarding");
+  document.body.classList.remove("is-app", "is-auth");
+
+  els.onboarding.innerHTML = `
+    <div class="onboarding__inner">
+      <header class="onboarding__header">
+        <span class="brand brand--lg">
+          <span class="brand__mark" aria-hidden="true">C</span>
+          <span class="brand__text">App <strong>CEPK</strong></span>
+        </span>
+        <p class="onboarding__kicker">Seu ano, sem surpresas</p>
+        <h1>Descubra hoje o que você precisa para <strong>passar de ano</strong>.</h1>
+        <p class="onboarding__sub">Leva menos de 2 minutos. Sua conta é local: nada é enviado para a internet.</p>
+      </header>
+
+      <div class="onboarding__card">
+        <ol class="steps" aria-label="Etapas da configuração">${onboardingSteps()}</ol>
+        <div class="onboarding__content">${onboardingContent()}</div>
+        ${state.onboardingError ? `<p class="form-error" role="alert">${esc(state.onboardingError)}</p>` : ""}
+        <footer class="onboarding__actions">
+          ${
+            step > 0
+              ? `<button type="button" class="btn btn--ghost" data-action="onboarding-back">Voltar</button>`
+              : `<span class="onboarding__step-hint">Passo ${step + 1} de 3</span>`
+          }
+          <button type="button" class="btn btn--primary" data-action="${
+            step === 2 ? "onboarding-finish" : "onboarding-next"
+          }">${step === 2 ? "Criar meu painel" : "Continuar"} ${icon("arrow")}</button>
+        </footer>
+      </div>
+
+      <p class="onboarding__privacy">${icon("lock")} Conta local. Sem servidor. Você pode exportar ou apagar tudo quando quiser.</p>
+    </div>`;
+}
+
+function updateOnboardingCount() {
+  const count = els.onboarding.querySelector('[data-role="subject-count"]');
+  if (count) count.textContent = `${state.onboarding.subjects.length} selecionada(s)`;
+}
+
+function finishOnboarding() {
+  const draft = state.onboarding;
+  const grade = toNumber(draft.passingGrade);
+  if (grade === null || grade < 0 || grade > 10) {
+    state.onboardingError = "Digite uma nota mínima entre 0 e 10.";
+    renderOnboarding();
+    return;
+  }
+  if (draft.subjects.length === 0) {
+    state.onboardingError = "Escolha pelo menos uma matéria para começar.";
+    renderOnboarding();
+    return;
+  }
+
+  const data = createData({ ...draft, passingGrade: grade });
+  state.data = data;
+  state.openSubjects.clear();
+  state.openSubjects.add(data.subjects[0].id);
+  state.sim = {
+    subjectId: data.subjects[0].id,
+    mode: "single",
+    assessmentId: null,
+    grade: 7,
+  };
+  state.notesSearch = "";
+  state.onboarding = null;
+  state.onboardingError = "";
+
+  try {
+    saveData(data, currentDataKey());
+    state.storageOk = true;
+  } catch (error) {
+    state.storageOk = false;
+    console.warn("App CEPK: não foi possível salvar os dados iniciais.", error);
+  }
+
+  document.body.classList.remove("is-onboarding");
+  navigate("notas");
+  showToast("Painel criado! Agora lance suas primeiras notas.", "success");
+}
+
+/* ------------------------------------------------------------------ */
+/* Dashboard                                                           */
+/* ------------------------------------------------------------------ */
+
+function renderDashboard() {
+  const data = state.data;
+  const target = data.passingGrade;
+  const structure = getStructure(data.structure);
+  const year = yearStats(data.subjects, target);
+  const name = firstName(data.studentName);
+  const overall = year.average;
+  const overallPct = overall === null ? 0 : clamp((overall / 10) * 100, 0, 100);
+  const targetPct = clamp(target * 10, 0, 100);
+
+  const alerts = year.alerts;
+  const alertHtml = alerts.length
+    ? `
+      <section class="callout callout--risk">
+        <span class="callout__icon">${icon("alert")}</span>
+        <div class="callout__body">
+          <strong>${alerts.length === 1 ? "1 matéria pede atenção" : `${alerts.length} matérias pedem atenção`}</strong>
+          <p>${
+            year.counts.critical
+              ? `${year.counts.critical} ${year.counts.critical === 1 ? "está" : "estão"} fora de alcance. `
+              : ""
+          }Comece pelas mais críticas.</p>
+        </div>
+      </section>
+      <div class="alert-chips">
+        ${alerts
+          .slice(0, 6)
+          .map(
+            (item) => `
+            <button type="button" class="chip chip--${item.status}" data-action="open-subject" data-subject="${item.id}">
+              <span>${esc(item.name)}</span><small>${neededShort(item)}</small>
+            </button>`,
+          )
+          .join("")}
+      </div>`
+    : year.withGrades
+      ? `
+      <section class="callout callout--safe">
+        <span class="callout__icon">${icon("check")}</span>
+        <div class="callout__body">
+          <strong>Tudo em dia por enquanto</strong>
+          <p>Nenhuma matéria está em risco com as notas lançadas até agora.</p>
+        </div>
+      </section>`
+      : "";
+
+  const accumulatedNames = year.accumulated
+    .slice(0, 4)
+    .map((item) => esc(item.name))
+    .join(", ");
+  const accumulatedNote = year.accumulated.length
+    ? `<p class="accumulated-note">${icon("alert")} ${year.accumulated.length} ${
+        year.accumulated.length === 1 ? "matéria tem" : "matérias têm"
+      } período fechado abaixo da meta${
+        accumulatedNames ? ` (${accumulatedNames}${year.accumulated.length > 4 ? " e outras" : ""})` : ""
+      }. O cálculo do ano já considera esse acúmulo.</p>`
+    : "";
+
+  const rows = year.items
+    .map((item) => {
+      const dots = item.periods
+        .map((period, index) => {
+          const tone = periodTone(period, target);
+          const label =
+            period.average === null ? "sem nota" : `média ${formatGrade(period.average)}`;
+          return `<span class="period-dot period-dot--${tone}" title="${esc(
+            period.name,
+          )}: ${esc(label)}">${index + 1}º</span>`;
+        })
+        .join("");
+
+      return `
+        <button type="button" class="subject-row" data-action="open-subject" data-subject="${item.id}" data-status="${item.status}">
+          <span class="subject-row__main">
+            <span class="subject-row__line">
+              <span class="subject-row__name">${esc(item.name)}</span>
+              ${subjectFlags(item)}
+            </span>
+            <span class="subject-row__stats">
+              <span><strong>${formatGrade(item.average)}</strong> média anual</span>
+              <span class="subject-row__needed">${neededText(item)}</span>
+            </span>
+            <span class="subject-row__dots">${dots}</span>
+          </span>
+          <span class="subject-row__side">
+            ${statusPill(item.status)}
+            <span class="subject-row__arrow" aria-hidden="true">${icon("arrow")}</span>
+          </span>
+        </button>`;
+    })
+    .join("");
+
+  const emptyCard =
+    year.withGrades === 0
+      ? `
+      <section class="empty-card">
+        <span class="empty-card__icon">${icon("spark")}</span>
+        <h2>Comece pelas notas que você já tem</h2>
+        <p>Assim que lançar a primeira nota, o app mostra a média e quanto falta para a meta.</p>
+        <a class="btn btn--primary" href="#/notas">Lançar minhas notas ${icon("arrow")}</a>
+      </section>`
+      : "";
+
+  return `
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">${esc(structure.short)} · meta ${formatGrade(target)}</p>
+        <h1>${name ? `${greeting()}, ${esc(name)}` : "Seu ano em um olhar"}</h1>
+        <p class="page-sub">${
+          year.withGrades
+            ? `${year.withGrades} de ${year.total} matérias com notas lançadas.`
+            : "Lance suas notas para descobrir quanto falta para passar."
+        }</p>
+      </div>
+    </div>
+
+    <section class="hero-card">
+      <div class="hero-card__content">
+        <p class="hero-card__label">Média parcial do ano</p>
+        <div class="hero-card__value">${
+          overall === null ? "—" : formatGrade(overall)
+        }<small>/10</small></div>
+        <p class="hero-card__hint">${
+          overall === null
+            ? "A média aparece quando você lançar a primeira nota."
+            : `${year.counts.safe} de ${year.total} matérias na meta`
+        }</p>
+        <div class="meter meter--hero" aria-hidden="true">
+          <span style="width:${overallPct}%"></span>
+          <i style="left:${targetPct}%"></i>
+        </div>
+        <div class="meter-legend"><span>0</span><span>meta ${formatGrade(target)}</span><span>10</span></div>
+      </div>
+      <div class="hero-card__grid">
+        <div class="mini-stat mini-stat--safe"><strong>${year.counts.safe}</strong><span>na meta</span></div>
+        <div class="mini-stat mini-stat--attention"><strong>${year.counts.attention}</strong><span>atenção</span></div>
+        <div class="mini-stat mini-stat--risk"><strong>${year.counts.risk}</strong><span>risco</span></div>
+        <div class="mini-stat mini-stat--critical"><strong>${year.counts.critical}</strong><span>fora de alcance</span></div>
+      </div>
+    </section>
+
+    ${alertHtml}
+    ${accumulatedNote}
+    ${emptyCard}
+
+    <div class="section-head">
+      <h2>Matérias</h2>
+      <a class="link-btn" href="#/notas">Lançar notas ${icon("arrow")}</a>
+    </div>
+    <div class="subject-list">${rows}</div>
+
+    <div class="quick-actions">
+      <a class="quick-action" href="#/notas">
+        <span class="quick-action__icon">${icon("list")}</span>
+        <span><strong>Lançar notas</strong><small>Por matéria e avaliação</small></span>
+      </a>
+      <a class="quick-action" href="#/simulador">
+        <span class="quick-action__icon">${icon("calculator")}</span>
+        <span><strong>Simular cenário</strong><small>“E se eu tirar X?”</small></span>
+      </a>
+      <button type="button" class="quick-action" data-action="export">
+        <span class="quick-action__icon">${icon("download")}</span>
+        <span><strong>Backup</strong><small>Exportar seus dados</small></span>
+      </button>
+    </div>
+
+    <details class="explainer">
+      <summary>Como o app calcula?</summary>
+      <div class="explainer__body">
+        <p><strong>Média do período</strong> = soma das notas × pesos ÷ soma dos pesos.</p>
+        <p><strong>Nota necessária</strong> = (meta × peso total − soma já obtida) ÷ peso que falta, arredondada para cima.</p>
+        <p>Se a conta passa de 10, a meta fica fora de alcance apenas com as avaliações restantes. Períodos já fechados abaixo da meta continuam contando no ano.</p>
+      </div>
+    </details>`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Notas                                                               */
+/* ------------------------------------------------------------------ */
+
+function notesCard(subject, stats, target) {
+  const open = state.openSubjects.has(subject.id);
+  const status = classifySubject(stats, target);
+  const averagePct = stats.average === null ? 0 : clamp((stats.average / 10) * 100, 0, 100);
+
+  const periods = stats.periods
+    .map((period) => {
+      const rawPeriod = subject.periods.find((item) => item.id === period.id);
+      if (!rawPeriod) return "";
+      const tone = periodTone(period, target);
+      const canRemove = rawPeriod.assessments.length > 1;
+
+      const assessments = rawPeriod.assessments
+        .map(
+          (assessment) => `
+          <div class="assessment" data-assessment-row="${assessment.id}">
+            <input class="assessment__name" type="text" value="${esc(
+              assessment.name,
+            )}" data-scope="assessment" data-field="name" data-subject="${subject.id}" data-period="${
+              period.id
+            }" data-assessment="${assessment.id}" aria-label="Nome da avaliação" maxlength="40">
+            <label class="mini-field">
+              <span>peso</span>
+              <input type="number" min="0.1" max="99" step="0.1" inputmode="decimal" value="${
+                assessment.weight
+              }" data-scope="assessment" data-field="weight" data-subject="${subject.id}" data-period="${
+                period.id
+              }" data-assessment="${assessment.id}" aria-label="Peso de ${esc(assessment.name)}">
+            </label>
+            <label class="mini-field mini-field--grade">
+              <span>nota</span>
+              <input type="text" inputmode="decimal" placeholder="—" value="${gradeToInput(
+                assessment.grade,
+              )}" data-scope="assessment" data-field="grade" data-subject="${subject.id}" data-period="${
+                period.id
+              }" data-assessment="${assessment.id}" aria-label="Nota de ${esc(assessment.name)}">
+            </label>
+            <button type="button" class="icon-btn icon-btn--danger" data-action="remove-assessment" data-subject="${
+              subject.id
+            }" data-period="${period.id}" data-assessment="${assessment.id}" ${
+              canRemove ? "" : "disabled"
+            } title="${canRemove ? "Remover avaliação" : "Mantenha pelo menos uma avaliação"}" aria-label="Remover ${esc(
+              assessment.name,
+            )}">${icon("trash")}</button>
+          </div>`,
+        )
+        .join("");
+
+      return `
+        <section class="period" data-period-block="${period.id}">
+          <header class="period__head">
+            <div class="period__title">
+              <span class="period__dot period__dot--${tone}" data-role="period-dot" aria-hidden="true"></span>
+              <h3>${esc(period.name)}</h3>
+            </div>
+            <div class="period__stats">
+              <span class="period__avg" data-role="period-average">${
+                period.average === null ? "sem notas" : `média ${formatGrade(period.average)}`
+              }</span>
+              <label class="weight-field" title="Peso do período no ano">
+                <span>peso</span>
+                <input type="number" min="0.1" max="99" step="0.1" inputmode="decimal" value="${
+                  period.weight
+                }" data-scope="period" data-field="weight" data-subject="${subject.id}" data-period="${
+                  period.id
+                }" aria-label="Peso do ${esc(period.name)} no ano">
+              </label>
+            </div>
+          </header>
+          <p class="period__needed" data-role="period-needed">${periodNeededText(period, target)}</p>
+          <div class="assessment-list">${assessments}</div>
+          <button type="button" class="btn btn--small btn--ghost" data-action="add-assessment" data-subject="${
+            subject.id
+          }" data-period="${period.id}">${icon("plus")} Avaliação</button>
+        </section>`;
+    })
+    .join("");
+
+  return `
+    <article class="subject-card ${open ? "is-open" : ""}" data-subject-card="${subject.id}" data-subject-name="${esc(
+      normalizeText(subject.name),
+    )}" data-status="${status}">
+      <button type="button" class="subject-card__head" data-action="toggle-subject" data-subject="${
+        subject.id
+      }" aria-expanded="${open}" aria-controls="body-${subject.id}">
+        <span class="subject-card__identity">
+          <span class="subject-card__name">${esc(subject.name)}</span>
+          <span class="subject-card__flags" data-role="subject-flags">${subjectFlags(stats)}</span>
+        </span>
+        <span class="subject-card__summary">
+          <span class="subject-card__avg"><strong data-role="subject-average">${formatGrade(
+            stats.average,
+          )}</strong><small>média anual</small></span>
+          <span data-role="subject-status">${statusPill(status)}</span>
+          <span class="chevron" aria-hidden="true">${icon("chevron")}</span>
+        </span>
+      </button>
+      <div class="subject-card__body" id="body-${subject.id}" ${open ? "" : "hidden"}>
+        <div class="subject-progress">
+          <div class="meter" aria-hidden="true">
+            <span data-role="subject-bar" style="width:${averagePct}%"></span>
+            <i class="meter__target" style="left:${clamp(target * 10, 0, 100)}%"></i>
+          </div>
+          <p class="subject-card__needed" data-role="subject-needed">${neededText(stats)}</p>
+        </div>
+        ${periods}
+        <p class="subject-card__hint">As médias recalculam enquanto você digita. Use o peso para dar mais valor a uma prova.</p>
+      </div>
+    </article>`;
+}
+
+function renderNotes() {
+  const data = state.data;
+  const target = data.passingGrade;
+  const items = data.subjects.map((subject) => ({
+    subject,
+    stats: subjectStats(subject, target),
+  }));
+
+  return `
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Lançamento de notas</p>
+        <h1>Suas notas</h1>
+        <p class="page-sub">Abra uma matéria e preencha as notas que já tem. Deixe em branco o que ainda não aconteceu.</p>
+      </div>
+    </div>
+
+    <div class="notes-toolbar">
+      <label class="search">
+        ${icon("search")}
+        <input type="search" placeholder="Buscar matéria" value="${esc(
+          state.notesSearch,
+        )}" data-search="subjects" autocomplete="off" aria-label="Buscar matéria">
+      </label>
+      <button type="button" class="btn btn--small btn--ghost" data-action="collapse-all">Recolher tudo</button>
+    </div>
+
+    <div class="notes-list">
+      ${items.map(({ subject, stats }) => notesCard(subject, stats, target)).join("")}
+    </div>
+    <p class="empty-search" data-role="search-empty" hidden>Nenhuma matéria encontrada com esse nome.</p>
+
+    <details class="explainer">
+      <summary>Dicas para lançar as notas</summary>
+      <div class="explainer__body">
+        <p>Deixe a nota vazia enquanto a avaliação não aconteceu — o app calcula quanto você precisa nela.</p>
+        <p>Se a escola usa pesos diferentes, ajuste o “peso” da avaliação. Uma prova com peso 2 vale o dobro de uma com peso 1.</p>
+        <p>Para trocar a quantidade de períodos ou a nota mínima, vá em <a href="#/ajustes">Ajustes</a>.</p>
+      </div>
+    </details>`;
+}
+
+function refreshSubjectCard(subjectId) {
+  const card = findSubjectCard(subjectId);
+  if (!card || !state.data) return;
+  const subject = findSubject(state.data, subjectId);
+  if (!subject) return;
+
+  const target = state.data.passingGrade;
+  const stats = subjectStats(subject, target);
+  const status = classifySubject(stats, target);
+
+  card.dataset.status = status;
+  setText(card.querySelector('[data-role="subject-average"]'), formatGrade(stats.average));
+  const statusElement = card.querySelector('[data-role="subject-status"]');
+  if (statusElement) statusElement.innerHTML = statusPill(status);
+  const flagsElement = card.querySelector('[data-role="subject-flags"]');
+  if (flagsElement) flagsElement.innerHTML = subjectFlags(stats);
+  const bar = card.querySelector('[data-role="subject-bar"]');
+  if (bar) bar.style.width = `${stats.average === null ? 0 : clamp((stats.average / 10) * 100, 0, 100)}%`;
+  const neededElement = card.querySelector('[data-role="subject-needed"]');
+  if (neededElement) neededElement.textContent = neededText(stats);
+
+  for (const period of stats.periods) {
+    const block = card.querySelector(`[data-period-block="${period.id}"]`);
+    if (!block) continue;
+    const tone = periodTone(period, target);
+    const averageElement = block.querySelector('[data-role="period-average"]');
+    if (averageElement) {
+      averageElement.textContent =
+        period.average === null ? "sem notas" : `média ${formatGrade(period.average)}`;
+    }
+    const needed = block.querySelector('[data-role="period-needed"]');
+    if (needed) needed.textContent = periodNeededText(period, target);
+    const dot = block.querySelector('[data-role="period-dot"]');
+    if (dot) dot.className = `period__dot period__dot--${tone}`;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Simulador                                                           */
+/* ------------------------------------------------------------------ */
+
+function simContext() {
+  if (!state.data || state.data.subjects.length === 0) return null;
+  const data = state.data;
+  const target = data.passingGrade;
+  let subject = findSubject(data, state.sim.subjectId);
+  if (!subject) subject = data.subjects[0];
+  state.sim.subjectId = subject.id;
+
+  const stats = subjectStats(subject, target);
+  const assessments = listAssessments(subject);
+  let selected = assessments.find((item) => item.assessmentId === state.sim.assessmentId);
+  if (!selected) {
+    selected = assessments.find((item) => !item.graded) ?? assessments[0] ?? null;
+    state.sim.assessmentId = selected?.assessmentId ?? null;
+  }
+
+  return { data, target, subject, stats, assessments, selected };
+}
+
+function neededValue(needed, impossibleLabel = "Impossível") {
+  if (!needed) return { value: "—", tone: "empty" };
+  if (needed.status === "guaranteed") return { value: "Garantida", tone: "safe" };
+  if (needed.status === "possible") return { value: formatGrade(needed.required), tone: "attention" };
+  if (needed.status === "impossible") return { value: impossibleLabel, tone: "critical" };
+  return { value: "—", tone: "empty" };
+}
+
+function neededPanel(ctx) {
+  const { subject, stats, target } = ctx;
+  const status = classifySubject(stats, target);
+  const next = nextUngraded(subject);
+  let nextValue = { value: "—", tone: "empty" };
+  let nextHint = "Todas as avaliações já foram lançadas";
+  let periodValue = { value: "—", tone: "empty" };
+  let periodHint = "Nenhuma avaliação restante";
+
+  if (next) {
+    const currentPeriod = periodStats(next.period, target);
+    nextValue = neededValue(currentPeriod.nextNeeded, "Impossível só nela");
+    nextHint = `${next.assessment.name} · ${next.period.name}`;
+    periodValue = neededValue(currentPeriod.needed, "Impossível");
+    periodHint = `${currentPeriod.name} · ${
+      currentPeriod.remainingCount === 1
+        ? "1 avaliação restante"
+        : `${currentPeriod.remainingCount} avaliações restantes`
+    }`;
+  }
+
+  const annualValue = neededValue(stats.needed, "Fora de alcance");
+  const annualHint =
+    stats.average === null
+      ? "Média mínima em todas as avaliações"
+      : stats.needed.status === "possible"
+        ? "Nota mínima em todas as restantes"
+        : stats.needed.status === "guaranteed"
+          ? "Meta já garantida"
+          : stats.needed.status === "impossible"
+            ? "Nem com 10 em todas"
+            : "Sem pesos válidos";
+
+  return `
+    <section class="panel needed-panel">
+      <div class="panel__head">
+        <div>
+          <p class="eyebrow">Quanto você precisa</p>
+          <h2>${esc(subject.name)}</h2>
+        </div>
+        ${statusPill(status)}
+      </div>
+      <div class="needed-grid">
+        <div class="needed-stat">
+          <span class="needed-stat__label">Próxima avaliação</span>
+          <strong class="needed-stat__value tone--${nextValue.tone}">${nextValue.value}</strong>
+          <small>${esc(nextHint)}</small>
+        </div>
+        <div class="needed-stat">
+          <span class="needed-stat__label">Restante do período</span>
+          <strong class="needed-stat__value tone--${periodValue.tone}">${periodValue.value}</strong>
+          <small>${esc(periodHint)}</small>
+        </div>
+        <div class="needed-stat">
+          <span class="needed-stat__label">Restante do ano</span>
+          <strong class="needed-stat__value tone--${annualValue.tone}">${annualValue.value}</strong>
+          <small>${esc(annualHint)}</small>
+        </div>
+      </div>
+      <p class="hint">A nota da próxima avaliação assume que as seguintes serão tiradas na meta. A do restante do período considera todas as avaliações que faltam.</p>
+    </section>`;
+}
+
+function compareCard(label, before, after, tone = "") {
+  return `
+    <div class="compare">
+      <span class="compare__label">${label}</span>
+      <span class="compare__values">
+        <strong>${before}</strong>
+        <span class="compare__arrow" aria-hidden="true">→</span>
+        <strong class="compare__after ${tone}">${after}</strong>
+      </span>
+    </div>`;
+}
+
+function simResultsHtml(ctx, mode, grade) {
+  const { subject, stats, target, selected } = ctx;
+  const beforeAverage = stats.average;
+  const beforeStatus = classifySubject(stats, target);
+
+  if (mode === "all" && stats.remainingWeight <= 1e-9) {
+    return `
+      <div class="sim-empty">
+        ${icon("check")}
+        <h3>Todas as avaliações já foram lançadas</h3>
+        <p>Use “Uma avaliação” para testar como ficaria a média se você mudasse uma nota existente.</p>
+      </div>`;
+  }
+
+  if (mode === "single" && !selected) {
+    return `
+      <div class="sim-empty">
+        ${icon("alert")}
+        <h3>Nenhuma avaliação cadastrada</h3>
+        <p>Adicione uma avaliação na matéria para simular.</p>
+      </div>`;
+  }
+
+  let afterSubject;
+  let scopeText;
+  let afterPeriod = null;
+  let beforePeriod = null;
+
+  if (mode === "all") {
+    afterSubject = applyGradeToRemaining(subject, grade);
+    scopeText = "em todas as avaliações que faltam";
+  } else {
+    afterSubject = applyGrade(subject, selected.periodId, selected.assessmentId, grade);
+    scopeText = `na ${esc(selected.assessmentName)} do ${esc(selected.periodName)}`;
+    const afterRaw = afterSubject.periods.find((period) => period.id === selected.periodId);
+    if (afterRaw) afterPeriod = periodStats(afterRaw, target);
+    beforePeriod = stats.periods.find((period) => period.id === selected.periodId) ?? null;
+  }
+
+  const afterStats = subjectStats(afterSubject, target);
+  const afterStatus = classifySubject(afterStats, target);
+  const afterAverage = afterStats.average;
+  const delta =
+    beforeAverage !== null && afterAverage !== null ? afterAverage - beforeAverage : null;
+
+  let outcome;
+  if (afterStats.needed.status === "guaranteed") {
+    outcome = "Com esse cenário, a meta do ano fica garantida.";
+  } else if (afterStats.needed.status === "impossible") {
+    outcome = afterStats.complete
+      ? "A média final ficaria abaixo da meta."
+      : "Mesmo assim, a meta do ano fica fora de alcance.";
+  } else {
+    outcome = `Depois disso, ainda seria preciso tirar ${formatGrade(
+      afterStats.needed.required,
+    )} no restante do ano.`;
+  }
+
+  const beforeAverageLabel = beforeAverage === null ? "—" : formatGrade(beforeAverage);
+  const afterAverageLabel = afterAverage === null ? "—" : formatGrade(afterAverage);
+  const deltaLabel =
+    delta === null
+      ? ""
+      : `${delta > 0.004 ? "+" : ""}${delta.toLocaleString("pt-BR", {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+        })}`;
+
+  const sentence =
+    beforeAverage === null
+      ? `Se você tirar <strong>${formatGrade(grade)}</strong> ${scopeText}, a média anual de <strong>${esc(
+          subject.name,
+        )}</strong> começa em <strong>${afterAverageLabel}</strong>.`
+      : `Se você tirar <strong>${formatGrade(grade)}</strong> ${scopeText}, a média anual de <strong>${esc(
+          subject.name,
+        )}</strong> ${delta > 0.004 ? "sobe" : delta < -0.004 ? "cai" : "fica"} de <strong>${beforeAverageLabel}</strong> para <strong>${afterAverageLabel}</strong>.`;
+
+  const periodCompare =
+    mode === "single" && beforePeriod && afterPeriod
+      ? compareCard(
+          `Média do ${esc(selected.periodName)}`,
+          beforePeriod.average === null ? "—" : formatGrade(beforePeriod.average),
+          afterPeriod.average === null ? "—" : formatGrade(afterPeriod.average),
+        )
+      : "";
+
+  return `
+    <div class="sim-summary">
+      <div class="sim-summary__top">
+        <span class="sim-summary__label">Resultado da simulação</span>
+        ${deltaLabel ? `<span class="delta ${delta > 0.004 ? "delta--up" : delta < -0.004 ? "delta--down" : ""}">${deltaLabel}</span>` : ""}
+      </div>
+      <div class="compare-grid">
+        ${compareCard("Média anual", beforeAverageLabel, afterAverageLabel)}
+        ${periodCompare}
+        ${compareCard(
+          "Nota que falta no ano",
+          neededShort(stats),
+          neededShort(afterStats),
+        )}
+      </div>
+      <p class="sim-sentence">${sentence}</p>
+      <div class="sim-outcome">
+        ${statusPill(afterStatus)}
+        <p>${outcome}</p>
+      </div>
+    </div>`;
+}
+
+function renderSimulator() {
+  const ctx = simContext();
+  if (!ctx) {
+    return `
+      <div class="page-head"><div><p class="eyebrow">Simulador</p><h1>E se eu tirar X?</h1></div></div>
+      <div class="empty-card"><h2>Adicione uma matéria primeiro</h2><p>O simulador precisa de pelo menos uma matéria cadastrada.</p><a class="btn btn--primary" href="#/ajustes">Ir para Ajustes</a></div>`;
+  }
+
+  const { data, subject, stats, assessments, selected } = ctx;
+  const mode = state.sim.mode;
+  const grade = state.sim.grade;
+
+  const subjectOptions = data.subjects
+    .map(
+      (item) =>
+        `<option value="${item.id}" ${item.id === subject.id ? "selected" : ""}>${esc(item.name)}</option>`,
+    )
+    .join("");
+
+  const assessmentOptions = assessments
+    .map(
+      (item) =>
+        `<option value="${item.assessmentId}" ${
+          selected && item.assessmentId === selected.assessmentId ? "selected" : ""
+        }>${esc(item.periodName)} · ${esc(item.assessmentName)}${
+          item.graded ? ` — nota ${formatGrade(item.grade)}` : ""
+        }</option>`,
+    )
+    .join("");
+
+  const presets = [5, 6, 7, 8, 9, 10]
+    .map(
+      (value) =>
+        `<button type="button" class="preset ${Math.abs(grade - value) < 0.05 ? "is-active" : ""}" data-action="sim-preset" data-grade="${value}">${value}</button>`,
+    )
+    .join("");
+
+  return `
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Simulador</p>
+        <h1>E se eu tirar X?</h1>
+        <p class="page-sub">Teste uma nota antes da prova e veja o efeito na média do período e do ano.</p>
+      </div>
+    </div>
+
+    ${neededPanel(ctx)}
+
+    <section class="panel sim-panel">
+      <div class="panel__head">
+        <div>
+          <p class="eyebrow">Monte o cenário</p>
+          <h2>${esc(subject.name)}</h2>
+        </div>
+        <span data-role="sim-status">${statusPill(classifySubject(stats, ctx.target))}</span>
+      </div>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>Matéria</span>
+          <select data-sim="subject">${subjectOptions}</select>
+        </label>
+        <div class="field">
+          <span>Onde a nota entra</span>
+          <div class="segmented" role="group" aria-label="Escopo da simulação">
+            <button type="button" class="${mode === "single" ? "is-active" : ""}" data-action="sim-mode" data-mode="single" aria-pressed="${
+              mode === "single"
+            }">Uma avaliação</button>
+            <button type="button" class="${mode === "all" ? "is-active" : ""}" data-action="sim-mode" data-mode="all" aria-pressed="${
+              mode === "all"
+            }">Todas as próximas</button>
+          </div>
+        </div>
+      </div>
+
+      ${
+        mode === "single"
+          ? `<label class="field">
+              <span>Avaliação</span>
+              <select data-sim="assessment" ${assessments.length ? "" : "disabled"}>${assessmentOptions}</select>
+            </label>`
+          : ""
+      }
+
+      <div class="grade-control">
+        <div class="grade-control__top">
+          <span class="field__label">Nota simulada</span>
+          <span class="grade-control__value">
+            <input type="text" inputmode="decimal" value="${gradeToInput(
+              grade,
+            )}" data-sim="grade-number" aria-label="Nota simulada">
+            <span>/10</span>
+          </span>
+        </div>
+        <input type="range" min="0" max="10" step="0.1" value="${grade}" data-sim="grade-range" aria-label="Nota simulada" style="--fill:${
+          grade * 10
+        }%">
+        <div class="grade-presets">${presets}</div>
+      </div>
+
+      <div data-role="sim-results">${simResultsHtml(ctx, mode, grade)}</div>
+    </section>
+
+    <details class="explainer">
+      <summary>Como interpretar o simulador</summary>
+      <div class="explainer__body">
+        <p>“Uma avaliação” muda só a nota escolhida. “Todas as próximas” aplica a mesma nota a todas as avaliações ainda sem nota.</p>
+        <p>A média do período considera apenas as notas daquele período. A média anual pondera os períodos e as avaliações pelos pesos que você definiu.</p>
+      </div>
+    </details>`;
+}
+
+function setSimGrade(value, { syncNumber = true, syncRange = true } = {}) {
+  const parsed = toNumber(value);
+  if (parsed === null) return;
+  const grade = clamp(Math.round(parsed * 10) / 10, 0, 10);
+  state.sim.grade = grade;
+
+  const range = document.querySelector('[data-sim="grade-range"]');
+  if (range && syncRange) {
+    range.value = String(grade);
+    range.style.setProperty("--fill", `${grade * 10}%`);
+  }
+  const number = document.querySelector('[data-sim="grade-number"]');
+  if (number && syncNumber) number.value = gradeToInput(grade);
+
+  document.querySelectorAll('[data-action="sim-preset"]').forEach((button) => {
+    button.classList.toggle("is-active", Math.abs(Number(button.dataset.grade) - grade) < 0.05);
+  });
+
+  const results = document.querySelector('[data-role="sim-results"]');
+  const ctx = simContext();
+  if (results && ctx) results.innerHTML = simResultsHtml(ctx, state.sim.mode, grade);
+}
+
+/* ------------------------------------------------------------------ */
+/* Ajustes                                                             */
+/* ------------------------------------------------------------------ */
+
+function renderSettings() {
+  const data = state.data;
+  const target = data.passingGrade;
+  const savedAt = (() => {
+    try {
+      return new Date(data.updatedAt).toLocaleString("pt-BR", {
+        dateStyle: "short",
+        timeStyle: "short",
+      });
+    } catch {
+      return "agora";
+    }
+  })();
+
+  const subjectRows = data.subjects
+    .map(
+      (subject) => `
+      <div class="settings-subject">
+        <input type="text" value="${esc(subject.name)}" maxlength="40" data-setting="subject-name" data-subject="${
+          subject.id
+        }" aria-label="Nome da matéria">
+        <button type="button" class="icon-btn icon-btn--danger" data-action="remove-subject" data-subject="${
+          subject.id
+        }" title="Remover matéria" aria-label="Remover ${esc(subject.name)}">${icon("trash")}</button>
+      </div>`,
+    )
+    .join("");
+
+  return `
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Ajustes</p>
+        <h1>Do seu jeito</h1>
+        <p class="page-sub">Mude a meta, a estrutura do ano, as matérias e faça backup dos seus dados.</p>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="panel__head"><h2>Perfil</h2></div>
+      <div class="account-row">
+        <span class="account-row__icon" aria-hidden="true">${icon("user")}</span>
+        <span class="account-row__body">
+          <strong>${esc(state.account?.email ?? "")}</strong>
+          <small>Conta local neste dispositivo</small>
+        </span>
+        <button type="button" class="btn btn--small btn--ghost" data-action="logout">${icon(
+          "logout",
+        )} Sair</button>
+      </div>
+      <div class="field-grid">
+        <label class="field">
+          <span>Seu nome</span>
+          <input type="text" maxlength="60" value="${esc(
+            data.studentName,
+          )}" placeholder="Como quer ser chamado?" data-setting="student-name" autocomplete="given-name">
+        </label>
+        <label class="field">
+          <span>Série</span>
+          <select data-setting="grade-level">
+            ${GRADE_LEVELS.map(
+              (level) =>
+                `<option value="${level.id}" ${level.id === data.gradeLevelId ? "selected" : ""}>${
+                  level.label
+                }</option>`,
+            ).join("")}
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__head"><h2>Notas e períodos</h2></div>
+      <div class="field-grid">
+        <label class="field">
+          <span>Nota mínima para passar</span>
+          <input type="text" inputmode="decimal" value="${gradeToInput(
+            target,
+          )}" data-setting="passing-grade" aria-label="Nota mínima para passar">
+          <small>Entre 0 e 10. Padrão: 6,0.</small>
+        </label>
+        <label class="field">
+          <span>Estrutura do ano</span>
+          <select data-setting="structure">
+            ${Object.values(STRUCTURES)
+              .map(
+                (structure) =>
+                  `<option value="${structure.id}" ${
+                    structure.id === data.structure ? "selected" : ""
+                  }>${structure.label}</option>`,
+              )
+              .join("")}
+          </select>
+          <small>Ao trocar, as notas são preservadas por posição.</small>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__head">
+        <h2>Matérias</h2>
+        <span class="pill pill--empty">${data.subjects.length}</span>
+      </div>
+      <div class="settings-subjects">${subjectRows}</div>
+      <form class="inline-add" data-form="add-subject">
+        <input type="text" name="subject" maxlength="40" list="subject-catalog" placeholder="Nova matéria (ex.: Redação)" autocomplete="off" aria-label="Nome da nova matéria" required>
+        <button type="submit" class="btn btn--primary">${icon("plus")} Adicionar</button>
+      </form>
+      <datalist id="subject-catalog">
+        ${allCatalogSubjects()
+          .map((name) => `<option value="${esc(name)}"></option>`)
+          .join("")}
+      </datalist>
+      <p class="hint">Digite ou escolha qualquer matéria do catálogo. As notas ficam separadas por conta.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel__head"><h2>Backup dos dados</h2></div>
+      <p class="panel__text">Seus dados ficam só neste navegador. Exporte um JSON para não perder as notas ao trocar de celular ou limpar o histórico.</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" data-action="export">${icon(
+          "download",
+        )} Exportar JSON</button>
+        <button type="button" class="btn btn--ghost" data-action="import">Importar JSON</button>
+        <input id="import-file" type="file" accept=".json,application/json" hidden>
+      </div>
+      <p class="hint">Última alteração salva: ${esc(savedAt)}</p>
+    </section>
+
+    <section class="panel panel--danger">
+      <div class="panel__head"><h2>Zona de perigo</h2></div>
+      <p class="panel__text">Apaga as matérias, notas e configurações desta conta neste dispositivo. A conta e a senha continuam salvas. Não dá para desfazer sem um backup.</p>
+      <button type="button" class="btn btn--danger" data-action="reset">Apagar dados da conta</button>
+    </section>
+
+    <p class="privacy-note">${icon("lock")} Nenhuma informação é enviada para servidores. Conta, notas e senha (em hash) ficam no <code>localStorage</code> deste navegador.</p>`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Render principal                                                    */
+/* ------------------------------------------------------------------ */
+
+function storageBanner() {
+  if (state.storageOk) return "";
+  return `
+    <div class="banner banner--warn">
+      ${icon("alert")}
+      <div>
+        <strong>Modo temporário</strong>
+        <p>Este navegador bloqueou o salvamento local. Exporte um backup antes de fechar a página.</p>
+      </div>
+    </div>`;
+}
+
+function renderApp() {
+  if (!state.account) {
+    renderAuth();
+    return;
+  }
+  if (!state.data) {
+    renderOnboarding();
+    return;
+  }
+
+  els.auth.hidden = true;
+  els.onboarding.hidden = true;
+  els.workspace.hidden = false;
+  document.body.classList.remove("is-onboarding", "is-auth");
+  document.body.classList.add("is-app");
+
+  updateTopbar();
+  updateNav();
+
+  const content =
+    state.route === "notas"
+      ? renderNotes()
+      : state.route === "simulador"
+        ? renderSimulator()
+        : state.route === "ajustes"
+          ? renderSettings()
+          : renderDashboard();
+
+  els.view.innerHTML = storageBanner() + content;
+
+  if (state.route === "notas" && state.notesSearch) {
+    filterSubjects(state.notesSearch);
+  }
+
+  if (state.pendingScrollSubject) {
+    const subjectId = state.pendingScrollSubject;
+    state.pendingScrollSubject = null;
+    window.requestAnimationFrame(() => {
+      const card = findSubjectCard(subjectId);
+      if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+}
+
+function rerenderView({ preserveScroll = true } = {}) {
+  const scrollY = window.scrollY;
+  renderApp();
+  if (preserveScroll) {
+    window.requestAnimationFrame(() => window.scrollTo(0, scrollY));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Ações                                                               */
+/* ------------------------------------------------------------------ */
+
+async function handleAction(actionElement) {
+  const action = actionElement.dataset.action;
+  if (els.dialog?.open) return;
+
+  switch (action) {
+    case "auth-mode": {
+      state.auth.mode = actionElement.dataset.mode === "signup" ? "signup" : "login";
+      state.auth.error = "";
+      state.auth.busy = false;
+      renderAuth();
+      const emailInput = els.auth.querySelector('[name="email"]');
+      if (emailInput) emailInput.focus();
+      return;
+    }
+
+    case "toggle-password": {
+      const input = els.auth.querySelector('[name="password"]');
+      if (!input) return;
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      actionElement.innerHTML = icon(show ? "eyeOff" : "eye");
+      actionElement.setAttribute("aria-label", show ? "Ocultar senha" : "Mostrar senha");
+      actionElement.setAttribute("title", show ? "Ocultar senha" : "Mostrar senha");
+      input.focus();
+      return;
+    }
+
+    case "logout": {
+      const email = state.account?.email ?? "";
+      const ok = await confirmDialog({
+        title: "Sair da conta?",
+        message:
+          "Suas notas continuam salvas neste dispositivo. Para voltar, entre com o mesmo e-mail e senha.",
+        confirmLabel: "Sair",
+      });
+      if (!ok) return;
+      flushSave();
+      clearSession();
+      state.account = null;
+      state.data = null;
+      state.openSubjects.clear();
+      state.notesSearch = "";
+      state.sim = { subjectId: null, mode: "single", assessmentId: null, grade: 7 };
+      state.onboarding = null;
+      state.auth = { mode: "login", email, error: "", busy: false };
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      state.route = "inicio";
+      renderAuth();
+      window.scrollTo(0, 0);
+      showToast("Você saiu da conta.", "success");
+      return;
+    }
+
+    case "export":
+      exportBackup();
+      return;
+
+    case "import": {
+      const input = document.getElementById("import-file");
+      if (input) input.click();
+      return;
+    }
+
+    case "toggle-subject": {
+      const subjectId = actionElement.dataset.subject;
+      const card = findSubjectCard(subjectId);
+      if (!card) return;
+      const open = !state.openSubjects.has(subjectId);
+      if (open) state.openSubjects.add(subjectId);
+      else state.openSubjects.delete(subjectId);
+      card.classList.toggle("is-open", open);
+      actionElement.setAttribute("aria-expanded", String(open));
+      const body = card.querySelector(".subject-card__body");
+      if (body) body.hidden = !open;
+      return;
+    }
+
+    case "open-subject": {
+      const subjectId = actionElement.dataset.subject;
+      if (!subjectId) return;
+      state.openSubjects.add(subjectId);
+      if (state.route !== "notas") {
+        state.notesSearch = "";
+        state.pendingScrollSubject = subjectId;
+        navigate("notas");
+      } else {
+        const card = findSubjectCard(subjectId);
+        if (card) {
+          card.classList.add("is-open");
+          const button = card.querySelector(".subject-card__head");
+          if (button) button.setAttribute("aria-expanded", "true");
+          const body = card.querySelector(".subject-card__body");
+          if (body) body.hidden = false;
+          card.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+      return;
+    }
+
+    case "collapse-all": {
+      state.openSubjects.clear();
+      document.querySelectorAll("[data-subject-card]").forEach((card) => {
+        card.classList.remove("is-open");
+        const button = card.querySelector(".subject-card__head");
+        if (button) button.setAttribute("aria-expanded", "false");
+        const body = card.querySelector(".subject-card__body");
+        if (body) body.hidden = true;
+      });
+      return;
+    }
+
+    case "add-assessment": {
+      const subject = findSubject(state.data, actionElement.dataset.subject);
+      const period = subject?.periods.find((item) => item.id === actionElement.dataset.period);
+      if (!subject || !period) return;
+      const number = period.assessments.length + 1;
+      period.assessments.push(createAssessment(`Prova ${number}`));
+      commit();
+      rerenderView();
+      showToast("Avaliação adicionada.", "success");
+      return;
+    }
+
+    case "remove-assessment": {
+      const subject = findSubject(state.data, actionElement.dataset.subject);
+      const period = subject?.periods.find((item) => item.id === actionElement.dataset.period);
+      if (!subject || !period) return;
+      if (period.assessments.length <= 1) {
+        showToast("Cada período precisa de pelo menos uma avaliação.", "warn");
+        return;
+      }
+      const assessment = period.assessments.find(
+        (item) => item.id === actionElement.dataset.assessment,
+      );
+      if (!assessment) return;
+      if (assessment.grade !== null) {
+        const ok = await confirmDialog({
+          title: "Remover avaliação?",
+          message: `A nota lançada em “${assessment.name}” será apagada.`,
+          confirmLabel: "Remover",
+          danger: true,
+        });
+        if (!ok) return;
+      }
+      period.assessments = period.assessments.filter((item) => item.id !== assessment.id);
+      commit();
+      rerenderView();
+      showToast("Avaliação removida.", "success");
+      return;
+    }
+
+    case "sim-mode": {
+      state.sim.mode = actionElement.dataset.mode === "all" ? "all" : "single";
+      rerenderView({ preserveScroll: false });
+      return;
+    }
+
+    case "sim-preset": {
+      setSimGrade(actionElement.dataset.grade);
+      return;
+    }
+
+    case "onboarding-back": {
+      state.onboardingStep = Math.max(0, state.onboardingStep - 1);
+      state.onboardingError = "";
+      renderOnboarding();
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    case "onboarding-next": {
+      const draft = state.onboarding;
+      state.onboardingError = "";
+      if (state.onboardingStep === 1) {
+        const grade = toNumber(draft.passingGrade);
+        if (grade === null || grade < 0 || grade > 10) {
+          state.onboardingError = "Digite uma nota mínima entre 0 e 10.";
+          renderOnboarding();
+          return;
+        }
+        draft.passingGrade = grade;
+      }
+      if (state.onboardingStep === 2 && draft.subjects.length === 0) {
+        state.onboardingError = "Escolha pelo menos uma matéria para começar.";
+        renderOnboarding();
+        return;
+      }
+      state.onboardingStep = Math.min(2, state.onboardingStep + 1);
+      renderOnboarding();
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    case "onboarding-finish":
+      finishOnboarding();
+      return;
+
+    case "select-all-subjects": {
+      state.onboarding.subjects = onboardingOptions();
+      renderOnboarding();
+      return;
+    }
+
+    case "clear-subjects": {
+      state.onboarding.subjects = [];
+      renderOnboarding();
+      return;
+    }
+
+    case "remove-subject": {
+      const subject = findSubject(state.data, actionElement.dataset.subject);
+      if (!subject) return;
+      if (state.data.subjects.length <= 1) {
+        showToast("Você precisa manter pelo menos uma matéria.", "warn");
+        return;
+      }
+      const ok = await confirmDialog({
+        title: "Remover matéria?",
+        message: `“${subject.name}” e todas as notas dela serão apagadas.`,
+        confirmLabel: "Remover",
+        danger: true,
+      });
+      if (!ok) return;
+      state.data.subjects = state.data.subjects.filter((item) => item.id !== subject.id);
+      state.openSubjects.delete(subject.id);
+      if (state.sim.subjectId === subject.id) {
+        state.sim.subjectId = state.data.subjects[0]?.id ?? null;
+        state.sim.assessmentId = null;
+      }
+      commit();
+      rerenderView();
+      showToast("Matéria removida.", "success");
+      return;
+    }
+
+    case "reset": {
+      const ok = await confirmDialog({
+        title: "Apagar os dados da conta?",
+        message:
+          "Todas as matérias, notas e configurações desta conta neste dispositivo serão apagadas. A conta e a senha continuam salvas. Essa ação não pode ser desfeita.",
+        confirmLabel: "Apagar dados",
+        danger: true,
+      });
+      if (!ok) return;
+      clearData(currentDataKey());
+      state.data = null;
+      state.openSubjects.clear();
+      state.notesSearch = "";
+      state.sim = { subjectId: null, mode: "single", assessmentId: null, grade: 7 };
+      state.onboarding = createOnboardingDraft();
+      state.onboardingStep = 0;
+      state.onboardingError = "";
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      state.route = "inicio";
+      renderOnboarding();
+      window.scrollTo(0, 0);
+      showToast("Dados da conta apagados. Você pode começar de novo.", "success");
+      return;
+    }
+
+    default:
+      return;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Formulários e inputs                                                */
+/* ------------------------------------------------------------------ */
+
+function addCustomSubject(value, { onboarding = false } = {}) {
+  const name = String(value ?? "").trim().replace(/\s+/g, " ");
+  if (!name) return;
+  if (onboarding) {
+    const draft = state.onboarding;
+    if (draft.subjects.some((subject) => sameName(subject, name))) {
+      showToast("Essa matéria já está na lista.", "warn");
+      return;
+    }
+    draft.subjects.push(name);
+    renderOnboarding();
+    window.requestAnimationFrame(() => {
+      const input = document.getElementById("custom-subject");
+      if (input) input.focus();
+    });
+    return;
+  }
+
+  if (state.data.subjects.some((subject) => sameName(subject.name, name))) {
+    showToast("Essa matéria já está cadastrada.", "warn");
+    return;
+  }
+  state.data.subjects.push(createSubject(name, state.data.structure));
+  commit();
+  rerenderView();
+  showToast(`“${name}” adicionada.`, "success");
+}
+
+function handleNotesInput(element) {
+  if (!state.data || state.route !== "notas" || !element.dataset.scope) return;
+  const subject = findSubject(state.data, element.dataset.subject);
+  if (!subject) return;
+  const period = subject.periods.find((item) => item.id === element.dataset.period);
+  if (!period) return;
+
+  if (element.dataset.scope === "period") {
+    if (element.dataset.field === "weight") period.weight = weightFromInput(element.value);
+    refreshSubjectCard(subject.id);
+    scheduleSave();
+    return;
+  }
+
+  const assessment = period.assessments.find((item) => item.id === element.dataset.assessment);
+  if (!assessment) return;
+
+  if (element.dataset.field === "name") assessment.name = element.value;
+  else if (element.dataset.field === "weight") assessment.weight = weightFromInput(element.value);
+  else if (element.dataset.field === "grade") assessment.grade = clampGrade(element.value);
+
+  refreshSubjectCard(subject.id);
+  scheduleSave();
+}
+
+function handleNotesChange(element) {
+  if (!state.data || state.route !== "notas" || !element.dataset.scope) return;
+  const subject = findSubject(state.data, element.dataset.subject);
+  if (!subject) return;
+  const period = subject.periods.find((item) => item.id === element.dataset.period);
+  if (!period) return;
+
+  if (element.dataset.scope === "period") {
+    if (element.dataset.field === "weight") {
+      period.weight = weightFromInput(element.value);
+      element.value = String(period.weight);
+    }
+    refreshSubjectCard(subject.id);
+    commit();
+    return;
+  }
+
+  const assessment = period.assessments.find((item) => item.id === element.dataset.assessment);
+  if (!assessment) return;
+
+  if (element.dataset.field === "grade") {
+    const grade = clampGrade(element.value);
+    assessment.grade = grade === null ? null : Math.round(grade * 100) / 100;
+    element.value = gradeToInput(assessment.grade);
+  } else if (element.dataset.field === "weight") {
+    assessment.weight = weightFromInput(element.value);
+    element.value = String(assessment.weight);
+  } else if (element.dataset.field === "name") {
+    assessment.name = element.value.trim() || "Avaliação";
+    element.value = assessment.name;
+  }
+
+  refreshSubjectCard(subject.id);
+  commit();
+}
+
+function filterSubjects(term) {
+  const normalized = normalizeText(term);
+  let visible = 0;
+  document.querySelectorAll("[data-subject-card]").forEach((card) => {
+    const matches = !normalized || card.dataset.subjectName.includes(normalized);
+    card.hidden = !matches;
+    if (matches) visible += 1;
+  });
+  const empty = document.querySelector('[data-role="search-empty"]');
+  if (empty) empty.hidden = visible > 0 || !normalized;
+}
+
+async function handleSettingChange(element) {
+  const setting = element.dataset.setting;
+  if (!setting || !state.data) return;
+
+  if (setting === "student-name") {
+    state.data.studentName = element.value.trim();
+    updateTopbar();
+    commit();
+    return;
+  }
+
+  if (setting === "grade-level") {
+    state.data.gradeLevelId = getGradeLevel(element.value).id;
+    commit();
+    showToast("Série atualizada.", "success");
+    return;
+  }
+
+  if (setting === "passing-grade") {
+    const grade = toNumber(element.value);
+    if (grade === null || grade < 0 || grade > 10) {
+      element.value = gradeToInput(state.data.passingGrade);
+      showToast("Digite uma nota mínima entre 0 e 10.", "error");
+      return;
+    }
+    state.data.passingGrade = Math.round(grade * 100) / 100;
+    element.value = gradeToInput(state.data.passingGrade);
+    commit();
+    showToast("Nota mínima atualizada.", "success");
+    return;
+  }
+
+  if (setting === "structure") {
+    const next = element.value;
+    const previous = state.data.structure;
+    if (next === previous) return;
+    const structure = getStructure(next);
+    const ok = await confirmDialog({
+      title: "Trocar a estrutura do ano?",
+      message: `O ano passará a ter ${structure.label.toLowerCase()}. As notas são mantidas por posição; se a nova estrutura tiver menos períodos, as notas dos últimos períodos serão descartadas.`,
+      confirmLabel: "Trocar estrutura",
+      danger: true,
+    });
+    if (!ok) {
+      element.value = previous;
+      return;
+    }
+    state.data = applyStructure(state.data, next);
+    state.openSubjects.clear();
+    commit();
+    renderApp();
+    showToast(`Estrutura alterada para ${structure.label.toLowerCase()}.`, "success");
+    return;
+  }
+
+  if (setting === "subject-name") {
+    const subject = findSubject(state.data, element.dataset.subject);
+    if (!subject) return;
+    const name = element.value.trim().replace(/\s+/g, " ") || "Matéria";
+    const duplicate = state.data.subjects.some(
+      (item) => item.id !== subject.id && sameName(item.name, name),
+    );
+    if (duplicate) {
+      element.value = subject.name;
+      showToast("Já existe uma matéria com esse nome.", "warn");
+      return;
+    }
+    subject.name = name;
+    element.value = name;
+    commit();
+  }
+}
+
+function handleSettingInput(element) {
+  if (!state.data) return;
+  if (element.dataset.setting === "student-name") {
+    state.data.studentName = element.value;
+    updateTopbar();
+    scheduleSave();
+    return;
+  }
+  if (element.dataset.setting === "subject-name") {
+    const subject = findSubject(state.data, element.dataset.subject);
+    if (!subject) return;
+    subject.name = element.value;
+    scheduleSave();
+  }
+}
+
+function handleOnboardingInput(element) {
+  const draft = state.onboarding;
+  if (!draft) return;
+  const field = element.dataset.onboarding;
+  if (field === "student-name") {
+    draft.studentName = element.value;
+  } else if (field === "passing-grade") {
+    const parsed = toNumber(element.value);
+    if (parsed !== null) draft.passingGrade = parsed;
+  }
+}
+
+function handleOnboardingChange(element) {
+  const draft = state.onboarding;
+  if (!draft) return;
+  const field = element.dataset.onboarding;
+
+  if (field === "grade-level") {
+    draft.gradeLevelId = getGradeLevel(element.value).id;
+    draft.subjects = defaultSubjects(draft.gradeLevelId);
+    state.onboardingError = "";
+    renderOnboarding();
+    return;
+  }
+
+  if (field === "structure") {
+    draft.structure = getStructure(element.value).id;
+    state.onboardingError = "";
+    renderOnboarding();
+    return;
+  }
+
+  if (field === "passing-grade") {
+    const parsed = toNumber(element.value);
+    if (parsed !== null) {
+      draft.passingGrade = clamp(parsed, 0, 10);
+      element.value = gradeToInput(draft.passingGrade);
+    } else {
+      element.value = gradeToInput(draft.passingGrade);
+    }
+    return;
+  }
+
+  if (field === "subject") {
+    const name = element.value;
+    if (element.checked) {
+      if (!draft.subjects.some((subject) => sameName(subject, name))) draft.subjects.push(name);
+    } else {
+      draft.subjects = draft.subjects.filter((subject) => !sameName(subject, name));
+    }
+    const label = element.closest(".check-chip");
+    if (label) label.classList.toggle("is-checked", element.checked);
+    updateOnboardingCount();
+    state.onboardingError = "";
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Eventos                                                             */
+/* ------------------------------------------------------------------ */
+
+document.addEventListener("click", (event) => {
+  const actionElement = event.target.closest("[data-action]");
+  if (!actionElement) return;
+  event.preventDefault();
+  void handleAction(actionElement);
+});
+
+document.addEventListener("input", (event) => {
+  const element = event.target;
+  if (!(element instanceof HTMLElement)) return;
+
+  if (element.matches("[data-search]")) {
+    state.notesSearch = element.value;
+    filterSubjects(element.value);
+    return;
+  }
+
+  if (element.dataset.scope) {
+    handleNotesInput(element);
+    return;
+  }
+
+  if (element.dataset.onboarding) {
+    handleOnboardingInput(element);
+    return;
+  }
+
+  if (element.dataset.setting) {
+    handleSettingInput(element);
+    return;
+  }
+
+  if (element.dataset.sim === "grade-range") {
+    setSimGrade(element.value, { syncNumber: true, syncRange: false });
+    return;
+  }
+
+  if (element.dataset.sim === "grade-number") {
+    setSimGrade(element.value, { syncNumber: false, syncRange: true });
+  }
+});
+
+document.addEventListener("change", (event) => {
+  const element = event.target;
+  if (!(element instanceof HTMLElement)) return;
+
+  if (element.id === "import-file" && element.files && element.files[0]) {
+    const file = element.files[0];
+    element.value = "";
+    void importFile(file);
+    return;
+  }
+
+  if (element.dataset.scope) {
+    handleNotesChange(element);
+    return;
+  }
+
+  if (element.dataset.onboarding) {
+    handleOnboardingChange(element);
+    return;
+  }
+
+  if (element.dataset.setting) {
+    void handleSettingChange(element);
+    return;
+  }
+
+  if (element.dataset.sim === "subject") {
+    state.sim.subjectId = element.value;
+    state.sim.assessmentId = null;
+    rerenderView({ preserveScroll: false });
+    return;
+  }
+
+  if (element.dataset.sim === "assessment") {
+    state.sim.assessmentId = element.value;
+    rerenderView({ preserveScroll: false });
+    return;
+  }
+
+  if (element.dataset.sim === "grade-number") {
+    setSimGrade(element.value);
+  }
+});
+
+document.addEventListener("submit", (event) => {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement)) return;
+
+  if (form.dataset.form === "auth") {
+    event.preventDefault();
+    void handleAuthSubmit(form);
+    return;
+  }
+
+  if (form.dataset.form === "custom-subject") {
+    event.preventDefault();
+    const input = form.querySelector("input");
+    addCustomSubject(input?.value, { onboarding: true });
+    return;
+  }
+
+  if (form.dataset.form === "add-subject") {
+    event.preventDefault();
+    const input = form.querySelector("input");
+    const name = input?.value ?? "";
+    if (!name.trim()) return;
+    addCustomSubject(name);
+    if (input) input.value = "";
+    window.requestAnimationFrame(() => {
+      const nextInput = document.querySelector('[data-form="add-subject"] input');
+      if (nextInput) nextInput.focus();
+    });
+  }
+});
+
+window.addEventListener("hashchange", () => {
+  const next = parseRoute();
+  const changed = next !== state.route;
+  state.route = next;
+  if (!state.account) {
+    renderAuth();
+    return;
+  }
+  if (!state.data) {
+    renderOnboarding();
+    return;
+  }
+  renderApp();
+  if (changed) window.scrollTo(0, 0);
+});
+
+window.addEventListener("pagehide", flushSave);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") flushSave();
+});
+
+if (els.dialog) {
+  els.dialog.addEventListener("click", (event) => {
+    if (event.target === els.dialog) els.dialog.close("cancel");
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Inicialização                                                       */
+/* ------------------------------------------------------------------ */
+
+function init() {
+  document.querySelectorAll("[data-icon]").forEach((element) => {
+    element.innerHTML = icon(element.dataset.icon);
+  });
+  renderNav();
+
+  state.storageOk = storageAvailable();
+  state.route = parseRoute();
+
+  const sessionId = loadSession();
+  const account = sessionId ? findAccountById(sessionId) : null;
+
+  if (!account) {
+    clearSession();
+    state.account = null;
+    renderAuth();
+    return;
+  }
+
+  state.account = account;
+  const stored = loadData(currentDataKey());
+  if (stored) {
+    state.data = stored;
+    state.sim.subjectId = stored.subjects[0]?.id ?? null;
+    if (state.route === "notas" && stored.subjects[0]) {
+      state.openSubjects.add(stored.subjects[0].id);
+    }
+    renderApp();
+  } else {
+    state.onboarding = createOnboardingDraft();
+    state.onboardingStep = 0;
+    renderOnboarding();
+  }
+}
+
+init();
+
+</script>
+</body>
+</html>
